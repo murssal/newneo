@@ -1,12 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PetForm.css';
 
 const PetForm = ({ userId, onPetAdded }) => {
   const [petType, setPetType] = useState('');
   const [petName, setPetName] = useState('');
+  const [imageData, setImageData] = useState('');
+
+  useEffect(() => {
+    if (petOptions.length > 0) {
+      loadImageData(petOptions[0].imageUrl); // Load data for the first pet type
+    }
+  }, []);
 
   const handlePetTypeChange = (event) => {
-    setPetType(event.target.value);
+    const selectedPetType = event.target.value;
+    const selectedPet = petOptions.find((pet) => pet.value === selectedPetType);
+    setPetType(selectedPetType);
+
+    loadImageData(selectedPet.imageUrl);
+  };
+
+  const loadImageData = async (imageUrl) => {
+    try {
+      console.log('Image URL loaded successfully:', imageUrl);
+      setImageData(imageUrl);
+    } catch (error) {
+      console.error('Error loading image data:', error.message);
+    }
   };
 
   const petOptions = [
@@ -20,6 +40,8 @@ const PetForm = ({ userId, onPetAdded }) => {
     event.preventDefault();
 
     try {
+      const selectedPet = petOptions.find((pet) => pet.value === petType);
+
       const response = await fetch('http://localhost:5000/api/user-pets', {
         method: 'POST',
         headers: {
@@ -29,6 +51,7 @@ const PetForm = ({ userId, onPetAdded }) => {
           user_id: userId,
           pet_name: petName,
           pet_type: petType,
+          image_data: imageData,
         }),
         credentials: 'include',
       });
