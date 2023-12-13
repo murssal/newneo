@@ -1,0 +1,46 @@
+.petform-container {
+    width: 500px;
+    max-width: 100%;
+    margin: auto;
+    padding: 50px;
+    border-radius: 50px;
+    text-align: center; /* make sure it's all centered */
+}
+
+.pet-options {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pet-option {
+    text-align: center;
+    margin: 10px;
+}
+
+.pet-option img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.petForm {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+}
+
+h2 {
+    font-family: 'Heffaklump', sans-serif;
+    font-weight: 600;
+    font-size: 40px;
+    margin: 0;
+    padding-bottom: 10px;
+}
+
+.nameInput{
+    margin-top: 10px;
+}
+
+input{
+    margin: 0px; /* make sure it's centered */
+}

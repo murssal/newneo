@@ -183,6 +183,42 @@ app.post('/api/user-pets', authenticateUser, async (req, res) => {
   }
 });
 
+// get user-pets route
+app.get('/api/get-user-pets', authenticateUser, async (req, res) => {
+  try {
+    const { username } = req.body;
+
+    if (!pet_name || !pet_type) {
+      return res.status(400).json({ error: 'Pet name and pet type are required.' });
+    }
+
+    const user_id = req.session.user.id;
+
+    const pool = mysql.createPool({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
+    });
+
+    const connection = await pool.getConnection();
+
+    const selectQuery = 'select user_pets (user_id, pet_name, pet_type, image_data) where username = ?';
+    const [pets] = await connection.execute(selectQuery, [username]);
+
+    connection.release();
+
+    res.status(200).json({ message: 'Pets retrieved successfully!' });
+    return pets
+  } catch (error) {
+    console.error('Error finding pets:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // User logout route
 app.post('/api/logout', (req, res) => {
   // Destroy the session
