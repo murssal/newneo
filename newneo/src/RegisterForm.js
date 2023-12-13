@@ -1,5 +1,6 @@
 // RegisterForm.js
 import React, { useState } from 'react';
+import './index.css'
 
 const RegisterForm = ({ onSubmit }) => {
     const [username, setUsername] = useState('');
@@ -13,7 +14,7 @@ const RegisterForm = ({ onSubmit }) => {
     };
 
     return (
-        <form className={"register-form"} onSubmit={handleSubmit} >
+        <form className="register-form" onSubmit={handleSubmit} >
             <div className="form-container">
                 <img
                     className="signup-image"

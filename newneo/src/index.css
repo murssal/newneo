@@ -14,12 +14,16 @@ header {
   height: 100px;
 
   /*Added font*/
-  font-size: 16px;
+  font-size: 20px;
   font-family: 'Heffaklump', sans-serif;
   font-weight: 600; /* Numeric value for bold */
   border-radius: 10px;
 }
 
+body {
+  font-family: 'Heffaklump', sans-serif;
+  font-weight: 600; /* Numeric value for bold */
+}
 
 /* login forms */
 
@@ -32,6 +36,7 @@ form {
 }
 
 label {
+  font-size: 20px;
   margin-top: 16px;
   display: block;
   font-weight: bold;
@@ -45,6 +50,9 @@ input {
 }
 
 button {
+  font-size: 16px;
+  font-family: 'Heffaklump', sans-serif;
+  font-weight: 600; /* Numeric value for bold */
   background-color: #e6b72c;
   color: black;
   padding: 10px 15px;
@@ -72,7 +80,12 @@ button:hover {
 
 /* for the register forms */
 .register-form {
-  width: 600px;
+  width: 500px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 50px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .form-container {

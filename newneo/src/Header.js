@@ -46,17 +46,18 @@ const Header = () => {
                     ) : (
                         <>
                             <li>
-                                <Link to="/" onClick={() => handleItemClick('Home')}>Home</Link>
+                                <Link to="/" onClick={() => handleItemClick('Home')}>home</Link>
                             </li>
                             <li>
-                                <Link to="/login" onClick={() => handleItemClick('Login')}>Login</Link>
+                                <Link to="/about" onClick={() => handleItemClick('About')}>about</Link>
                             </li>
                             <li>
-                                <Link to="/register" onClick={() => handleItemClick('Register')}>Register</Link>
+                                <Link to="/login" onClick={() => handleItemClick('Login')}>login!</Link>
                             </li>
                             <li>
-                                <Link to="/about" onClick={() => handleItemClick('About')}>About</Link>
+                                <Link to="/register" onClick={() => handleItemClick('Register')}>register!</Link>
                             </li>
+
                         </>
                     )}
                 </ul>
