@@ -43,7 +43,7 @@ const Header = () => {
                     ) : (
                         <>
                             <li>
-                                <Link to="/Login" onClick={() => handleItemClick('Login')}>Login</Link>
+                                <Link to="/login" onClick={() => handleItemClick('Login')}>Login</Link>
                             </li>
                             <li>
                                 <Link to="/register" onClick={() => handleItemClick('Register')}>Register</Link>
