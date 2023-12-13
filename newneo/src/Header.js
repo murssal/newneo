@@ -27,21 +27,7 @@ const Header = () => {
                 <ul>
                     {isLoggedIn ? (
                         <>
-                            <li>
-                                <Link to="/" onClick={() => handleItemClick('Home')}>Home</Link>
-                            </li>
-                            <li>
-                                <Link to="/shelter" onClick={() => handleItemClick('Shelter')}>Shelter</Link>
-                            </li>
-                            <li>
-                                <Link to="/itemshop" onClick={() => handleItemClick('Item Shop')}>Item Shop</Link>
-                            </li>
-                            <li>
-                                <Link to="/account" onClick={() => handleItemClick('Account')}>Account</Link>
-                            </li>
-                            <li>
-                                <button onClick={logout}>Log Out</button>
-                            </li>
+
                         </>
                     ) : (
                         <>
@@ -57,7 +43,21 @@ const Header = () => {
                             <li>
                                 <Link to="/register" onClick={() => handleItemClick('Register')}>register!</Link>
                             </li>
-
+                            <li>
+                                <Link to="/shelter" onClick={() => handleItemClick('Shelter')}>shelter</Link>
+                            </li>
+                            <li>
+                                <Link to="/itemshop" onClick={() => handleItemClick('Item Shop')}>item shop</Link>
+                            </li>
+                            <li>
+                                <Link to="/account" onClick={() => handleItemClick('Account')}>account</Link>
+                            </li>
+                            <li>
+                                <Link to="/pets" onClick={() => handleItemClick('CreatePet')}>create a pet</Link>
+                            </li>
+                            <li>
+                                <button onClick={logout}>Log Out</button>
+                            </li>
                         </>
                     )}
                 </ul>

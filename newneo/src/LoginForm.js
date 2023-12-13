@@ -16,12 +16,14 @@ const LoginForm = ({ onLogin }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ username, password }),
+                credentials: 'include', // Important for sending cookies
             });
 
             const data = await response.json();
 
             if (response.ok) {
                 console.log('Login successful:', data);
+               
                 
                 // Call the callback prop if provided
                 if (onLogin) {

@@ -21,6 +21,7 @@ const RegisterForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password, email }),
+        
       });
 
       if (response.ok) {
