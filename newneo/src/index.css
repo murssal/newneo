@@ -1,21 +1,22 @@
-/*@font-face {*/
-/*  font-family: 'Heffaklump';*/
-/*  src: url('/fonts/Heffaklump.ttf') format('truetype');*/
-/*  font-weight: normal;*/
-/*  font-style: normal;*/
-/*}*/
-
-/*header {*/
-/*  font-family: 'Heffaklump'; */
-/*}*/
+/* Heffaklump Font https://fontmeme.com/fonts/heffaklump-font/*/
+@font-face {
+  font-family: 'Heffaklump';
+  src: url('./fonts/heffaklump/Heffaklump.ttf') format('truetype');
+}
 
 header {
+  background: linear-gradient(to top, #ff7e5f, #feb47b);
+
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #eee;
   height: 100px;
+
+  /*Added font*/
+  font-size: 16px;
+  font-family: 'Heffaklump', sans-serif;
+  font-weight: 600; /* Numeric value for bold */
 }
 
 .logo-container {

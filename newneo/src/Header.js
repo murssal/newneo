@@ -28,13 +28,16 @@ const Header = () => {
                     {isLoggedIn ? (
                         <>
                             <li>
-                                <Link to="/Shelter" onClick={() => handleItemClick('Shelter')}>Shelter</Link>
+                                <Link to="/" onClick={() => handleItemClick('Home')}>Home</Link>
                             </li>
                             <li>
-                                <Link to="/ItemShop" onClick={() => handleItemClick('Item Shop')}>Item Shop</Link>
+                                <Link to="/shelter" onClick={() => handleItemClick('Shelter')}>Shelter</Link>
                             </li>
                             <li>
-                                <Link to="/Account" onClick={() => handleItemClick('Item Shop')}>Item Shop</Link>
+                                <Link to="/itemshop" onClick={() => handleItemClick('Item Shop')}>Item Shop</Link>
+                            </li>
+                            <li>
+                                <Link to="/account" onClick={() => handleItemClick('Account')}>Account</Link>
                             </li>
                             <li>
                                 <button onClick={logout}>Log Out</button>
@@ -43,13 +46,16 @@ const Header = () => {
                     ) : (
                         <>
                             <li>
-                                <Link to="/Login" onClick={() => handleItemClick('Login')}>Login</Link>
+                                <Link to="/" onClick={() => handleItemClick('Home')}>Home</Link>
+                            </li>
+                            <li>
+                                <Link to="/login" onClick={() => handleItemClick('Login')}>Login</Link>
                             </li>
                             <li>
                                 <Link to="/register" onClick={() => handleItemClick('Register')}>Register</Link>
                             </li>
                             <li>
-                                <Link to="/About" onClick={() => handleItemClick('About')}>About</Link>
+                                <Link to="/about" onClick={() => handleItemClick('About')}>About</Link>
                             </li>
                         </>
                     )}

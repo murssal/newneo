@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './Header';
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
+import Home from './Home';
 import { UserProvider } from './UserContext';
 
 const App = () => {
@@ -23,9 +24,12 @@ const App = () => {
                 <div>
                     <Header />
                     <Routes>
+                        {/* Default path when website is loaded (Home)*/}
+                        <Route path="/" element={<Home />} />
+                        
+                        {/* other routes */}
                         <Route path="/register" element={<RegisterForm onSubmit={handleRegisterSubmit} />} />
                         <Route path="/login" element={<LoginForm onLogin={handleLoginSubmit} />} />
-                        {/* other routes */}
                     </Routes>
                 </div>
             </Router>
