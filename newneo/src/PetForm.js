@@ -8,14 +8,14 @@ const PetForm = ({ userId, onPetAdded }) => {
     const selectedPetType = event.target.value;
     // You can set image_data based on the selected pet type
     let imageData = '';
-    if (selectedPetType === 'cat') {
+    if (selectedPetType === 'Aisha') {
       imageData = 'https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/aisha.gif?v=1702338038022';
-    } else if (selectedPetType === 'dog') {
+    } else if (selectedPetType === 'Flotsam') {
       imageData = 'https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/flotsam.gif?v=1702341566583';
-    } else if (selectedPetType === 'bunny') {
-      imageData = 'bunny_image_url';
-    } else if (selectedPetType === 'frog') {
-      imageData = 'frog_image_url';
+    } else if (selectedPetType === 'Kacheek') {
+      imageData = 'https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/kacheek.gif?v=1702341629158';
+    } else if (selectedPetType === 'Kougra') {
+      imageData = 'https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/kougra.gif?v=1702452833954';
     }
     setPetType(selectedPetType);
   };
@@ -59,10 +59,10 @@ const PetForm = ({ userId, onPetAdded }) => {
         <label>
           Pet Type:
           <select value={petType} onChange={handlePetTypeChange}>
-            <option value="cat">Cat</option>
-            <option value="dog">Dog</option>
-            <option value="bunny">Bunny</option>
-            <option value="frog">Frog</option>
+            <option value="Aisha">Aisha</option>
+            <option value="Flotsam">Flotsam</option>
+            <option value="Kacheek">Kacheek</option>
+            <option value="Kougra">Kougra</option>
           </select>
         </label>
         <br />
