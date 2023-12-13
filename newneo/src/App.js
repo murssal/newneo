@@ -7,6 +7,7 @@ import LoginForm from './LoginForm';
 import Home from './Home';
 import PetForm from './PetForm';
 import { UserProvider } from './UserContext';
+import ItemShop from './itemShop';
 
 const App = () => {
     const handleRegisterSubmit = (formData) => {
@@ -37,6 +38,7 @@ const App = () => {
                         <Route path="/register" element={<RegisterForm onSubmit={handleRegisterSubmit} />} />
                         <Route path="/login" element={<LoginForm onLogin={handleLoginSubmit} />} />
                         <Route path="/pets" element={<PetForm onSubmit={handlePetSubmit} />} />
+                        <Route path="/itemshop" element={<ItemShop />} />
                     </Routes>
                 </div>
             </Router>

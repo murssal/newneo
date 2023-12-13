@@ -196,6 +196,33 @@ app.post('/api/logout', (req, res) => {
   });
 });
 
+// route to fetch items
+app.get('/api/items', async (req, res) => {
+  try {
+    const pool = mysql.createPool({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
+    });
+
+    const connection = await pool.getConnection();
+
+    const selectQuery = 'SELECT item_id, item_name, item_photo, price FROM items';
+    const [items] = await connection.execute(selectQuery);
+
+    connection.release();
+
+    res.status(200).json(items);
+  } catch (error) {
+    console.error('Error fetching items:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 // Serve the default public/index.html created by Create React App
 app.get('*', (req, res) => {

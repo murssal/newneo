@@ -1,0 +1,41 @@
+.background {
+    background: #e6b72c;
+    border-radius: 50px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 10px;
+}
+
+.item-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* three columns */
+    gap: 0px;
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+.item-card {
+    margin: 20px;
+    border-radius: 40px;
+
+    text-align: center;
+    background: #f5d578;
+}
+
+.buy-button {
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.item-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+}
