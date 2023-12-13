@@ -36,14 +36,25 @@ const generateSecretKey = () => {
   return crypto.randomBytes(32).toString('hex');
 };
 
-// Use the generated key in your express-session configuration
+const secretKey = generateSecretKey(); // Generate once
 app.use(
   session({
-    secret: generateSecretKey(),
+    secret: secretKey,
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      secure: false, // Use 'true' in production with HTTPS
+      maxAge: 86400000, // Session duration in milliseconds (e.g., 1 day)
+    },
   })
 );
+
+// Add debugging middleware
+app.use((req, res, next) => {
+  console.log('Session data:', req.session);
+  next();
+});
+
 
 //User Register
 app.post('/api/users', async (req, res) => {

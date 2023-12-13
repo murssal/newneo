@@ -9,9 +9,9 @@ const PetForm = ({ userId, onPetAdded }) => {
     // You can set image_data based on the selected pet type
     let imageData = '';
     if (selectedPetType === 'cat') {
-      imageData = 'cat_image_url';
+      imageData = 'https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/aisha.gif?v=1702338038022';
     } else if (selectedPetType === 'dog') {
-      imageData = 'dog_image_url';
+      imageData = 'https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/flotsam.gif?v=1702341566583';
     } else if (selectedPetType === 'bunny') {
       imageData = 'bunny_image_url';
     } else if (selectedPetType === 'frog') {
