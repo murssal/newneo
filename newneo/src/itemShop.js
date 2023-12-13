@@ -3,8 +3,32 @@ import './ItemShop.css';
 
 const ItemShop = () => {
     const [items, setItems] = useState([]);
+    const [user_id, setUserId] = useState(null);
 
     useEffect(() => {
+        // Fetch user ID from the server-side when the component mounts
+        fetch('http://localhost:5000/api/buy-item', {
+            credentials: 'include',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.user_id) {
+                    setUserId(data.user_id);
+                } else {
+                    console.error('User ID not available.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching user info:', error);
+                console.error('Response text:', error.response?.text); // Log the response text
+            });
+
+        // Fetch items
         fetch('http://localhost:5000/api/items')
             .then(response => {
                 if (!response.ok) {
@@ -16,9 +40,34 @@ const ItemShop = () => {
             .catch(error => console.error('Error fetching data:', error));
     }, []);
 
-    const handleBuyClick = (itemId) => {
-        // Implement logic to handle the buy button click
-        console.log(`Buy button clicked for item ${itemId}`);
+    const handleBuyClick = async (itemId) => {
+        try {
+            // Check if the user ID is available before making a purchase
+            if (!user_id) {
+                console.error('User ID not available to make a purchase.');
+                return;
+            }
+
+            const response = await fetch('http://localhost:5000/api/buy-item', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    itemId,
+                }),
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log(result.message);
+        } catch (error) {
+            console.error('Error buying item:', error.message);
+        }
     };
 
     return (

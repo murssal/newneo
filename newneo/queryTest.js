@@ -56,6 +56,7 @@ app.use((req, res, next) => {
 });
 
 
+
 //User Register
 app.post('/api/users', async (req, res) => {
   try {
@@ -219,6 +220,81 @@ app.get('/api/items', async (req, res) => {
     res.status(200).json(items);
   } catch (error) {
     console.error('Error fetching items:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/buy-item', authenticateUser, async (req, res) => {
+  try {
+    const pool = mysql.createPool({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
+    });
+
+    const { itemId } = req.body;
+    const user_id = req.session.user.id;
+
+    if (!user_id || !itemId) {
+      return res.status(400).json({ error: 'User ID and item ID are required.' });
+    }
+
+    const connection = await pool.getConnection();
+
+    try {
+      // Start a transaction
+      await connection.beginTransaction();
+
+      // Check the user's neopoints
+      const [userResult] = await connection.execute('SELECT neopoints FROM users WHERE user_id = ?', [user_id]);
+
+      if (!userResult || userResult.length === 0) {
+        // User not found
+        return res.status(404).json({ error: 'User not found.' });
+      }
+
+      const userNeopoints = userResult[0].neopoints;
+
+      // Get the item price
+      const itemPrice = await getItemPrice(connection, itemId);
+
+      if (itemPrice === null) {
+        // Item not found
+        return res.status(404).json({ error: 'Item not found.' });
+      }
+
+      // Check if the user has enough neopoints to buy the item
+      if (userNeopoints >= itemPrice) {
+        // Deduct the neopoints from the user
+        const remainingNeopoints = userNeopoints - itemPrice;
+        await connection.execute('UPDATE users SET neopoints = ? WHERE user_id = ?', [remainingNeopoints, user_id]);
+
+        // Add the item to the user's pocket
+        await connection.execute('INSERT INTO user_pocket (user_id, item_id, quantity) VALUES (?, ?, 1)', [user_id, itemId]);
+
+        // Commit the transaction
+        await connection.commit();
+
+        res.status(200).json({ message: 'Item purchased successfully!' });
+      } else {
+        res.status(403).json({ error: 'Insufficient neopoints to buy the item.' });
+      }
+
+    } catch (error) {
+      // If an error occurs, rollback the transaction
+      await connection.rollback();
+      console.error('Error buying item:', error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+      // Always release the connection back to the pool, whether there was an error or not
+      connection.release();
+    }
+  } catch (error) {
+    console.error('Error buying item:', error.message);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
