@@ -1,5 +1,7 @@
 // Header.js
 
+
+
 import React from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import { useUser } from './UserContext';
@@ -11,6 +13,24 @@ const Header = () => {
     const handleItemClick = (item) => {
         // Handle the click event for each menu item
         console.log(`Clicked on ${item}`);
+    };
+
+    const handleLogout = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/logout', {
+                method: 'POST',
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                console.log('Logout successful');
+                // You can perform additional actions after logout, such as redirecting the user
+            } else {
+                console.error('Logout failed:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error during logout:', error.message);
+        }
     };
 
     return (
@@ -56,7 +76,7 @@ const Header = () => {
                                 <Link to="/pets" onClick={() => handleItemClick('CreatePet')}>create a pet</Link>
                             </li>
                             <li>
-                                <button onClick={logout}>Log Out</button>
+                                <button onClick={handleLogout}>Log Out</button>
                             </li>
                         </>
                     )}

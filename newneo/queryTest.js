@@ -183,6 +183,18 @@ app.post('/api/user-pets', authenticateUser, async (req, res) => {
   }
 });
 
+// User logout route
+app.post('/api/logout', (req, res) => {
+  // Destroy the session
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error during logout:', err.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.status(200).json({ message: 'Logout successful!' });
+    }
+  });
+});
 
 
 // Serve the default public/index.html created by Create React App
