@@ -55,9 +55,6 @@ const Header = () => {
                                 <Link to="/" onClick={() => handleItemClick('Home')}>home</Link>
                             </li>
                             <li>
-                                <Link to="/about" onClick={() => handleItemClick('About')}>about</Link>
-                            </li>
-                            <li>
                                 <Link to="/login" onClick={() => handleItemClick('Login')}>login!</Link>
                             </li>
                             <li>

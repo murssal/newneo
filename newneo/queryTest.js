@@ -151,7 +151,7 @@ const authenticateUser = (req, res, next) => {
 // New user-pets insert route
 app.post('/api/user-pets', authenticateUser, async (req, res) => {
   try {
-    const { pet_name, pet_type } = req.body;
+    const { pet_name, pet_type, image_data } = req.body;
 
     if (!pet_name || !pet_type) {
       return res.status(400).json({ error: 'Pet name and pet type are required.' });
@@ -171,8 +171,8 @@ app.post('/api/user-pets', authenticateUser, async (req, res) => {
 
     const connection = await pool.getConnection();
 
-    const insertQuery = 'INSERT INTO user_pets (user_id, pet_name, pet_type) VALUES (?, ?, ?)';
-    const [result] = await connection.execute(insertQuery, [user_id, pet_name, pet_type]);
+    const insertQuery = 'INSERT INTO user_pets (user_id, pet_name, pet_type, image_data) VALUES (?, ?, ?, ?)';
+    const [result] = await connection.execute(insertQuery, [user_id, pet_name, pet_type, image_data]);
 
     connection.release();
 

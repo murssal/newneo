@@ -5,7 +5,7 @@ header {
     padding: 10px 20px;
     background-image: url('https://portal.neopets.com/images/bg-images/top-banner-about-neopets.png');
     background-size: cover;
-    background-position-y: 325px;
+    background-attachment: fixed;
     height: 100px;
     margin-bottom: 50px;
 }
@@ -46,7 +46,7 @@ nav ul li a {
     display: inline-block;
     padding: 10px 15px;
     text-decoration: none;
-    color: #333;
+    color: black;
     background-color: #f5d578;
     border-radius: 50px;
     transition: background-color 0.3s ease;
