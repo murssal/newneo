@@ -21,16 +21,25 @@ const App = () => {
         <UserProvider>
             <Router>
                 <div>
-                    <Header />
+                    <Header/>
                     <Routes>
-                        <Route path="/register" element={<RegisterForm onSubmit={handleRegisterSubmit} />} />
-                        <Route path="/login" element={<LoginForm onLogin={handleLoginSubmit} />} />
+                        <Route
+                            path="/register"
+                            element={<RegisterForm onSubmit={handleRegisterSubmit}/>}
+                        />
+                        <Route
+                            path="/login"
+                            element={(
+                                <>
+                                    <LoginForm onLogin={handleLoginSubmit}/>
+                                </>
+                            )}
+                        />
                         {/* other routes */}
                     </Routes>
                 </div>
             </Router>
         </UserProvider>
     );
-};
-
+}
 export default App;

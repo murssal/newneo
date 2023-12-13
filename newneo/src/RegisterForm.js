@@ -13,23 +13,44 @@ const RegisterForm = ({ onSubmit }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                Username:
-                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-            </label>
-            <br />
-            <label>
-                Password:
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            </label>
-            <br />
-            <label>
-                Email:
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            </label>
-            <br />
-            <button type="submit">Register</button>
+        <form className={"register-form"} onSubmit={handleSubmit} >
+            <div className="form-container">
+                <img
+                    className="signup-image"
+                    src="https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/sign_up_aisha.png?v=1702428952415"
+                    alt="Signup"
+                />
+                <div className="form-fields">
+                    <label>
+                        Username:
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </label>
+                    <br />
+                    <label>
+                        Password:
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </label>
+                    <br />
+                    <label>
+                        Email:
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </label>
+                    <br />
+                    <button type="submit">REGISTER</button>
+                </div>
+            </div>
         </form>
     );
 };

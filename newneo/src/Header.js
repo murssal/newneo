@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import { useUser } from './UserContext';
-import './index.css'; // Import the CSS file
+import './Header.css'; // Import the CSS file
 
 const Header = () => {
     const { isLoggedIn, logout } = useUser();

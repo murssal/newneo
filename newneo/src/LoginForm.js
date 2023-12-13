@@ -1,6 +1,6 @@
 // LoginForm.js
 import React, { useState } from 'react';
-
+import './index.css';
 const LoginForm = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -32,6 +32,8 @@ const LoginForm = ({ onLogin }) => {
 
     return (
         <form onSubmit={handleSubmit}>
+            <img alt="login" class="formImg" src={"https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/login.gif?v=1702431752703"}>
+            </img>
             <label>
                 Username:
                 <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
@@ -42,7 +44,7 @@ const LoginForm = ({ onLogin }) => {
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </label>
             <br />
-            <button type="submit">Login</button>
+            <button type="submit">LOGIN</button>
         </form>
     );
 };
