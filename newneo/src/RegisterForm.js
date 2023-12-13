@@ -7,6 +7,8 @@ const RegisterForm = () => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,11 +28,17 @@ const RegisterForm = () => {
 
       if (response.ok) {
         console.log('User added successfully!');
+        setSuccessMessage('User registered successfully!');
+        setErrorMessage('');
       } else {
         console.error(`Failed to add user. Server responded with ${response.status}`);
+        setErrorMessage(`A user with that name or email already exists!`);
+        setSuccessMessage('');
       }
     } catch (error) {
       console.error('An error occurred while connecting to the server:', error.message);
+      setErrorMessage('An error occurred. Please try again.');
+      setSuccessMessage('');
     } finally {
       setLoading(false);
     }
@@ -46,6 +54,8 @@ const RegisterForm = () => {
                   alt="Signup"
               />
               <div className="form-fields">
+              {errorMessage && <div className="error-message">{errorMessage}</div>}
+            {successMessage && <div className="success-message">{successMessage}</div>}
             <label>
             Username:
             <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
