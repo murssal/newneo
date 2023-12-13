@@ -3,7 +3,9 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #e6b72c;
+    background-image: url('https://portal.neopets.com/images/bg-images/top-banner-about-neopets.png');
+    background-size: cover;
+    background-position-y: 325px;
     height: 100px;
     margin-bottom: 50px;
 }
