@@ -9,7 +9,8 @@ const LoginForm = ({ onLogin }) => {
         e.preventDefault();
 
         try {
-            const response = await fetch('/login', {
+            // Update the endpoint URL based on your backend route
+            const response = await fetch('http://localhost:5000/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -21,7 +22,11 @@ const LoginForm = ({ onLogin }) => {
 
             if (response.ok) {
                 console.log('Login successful:', data);
-                onLogin();
+                
+                // Call the callback prop if provided
+                if (onLogin) {
+                    onLogin();
+                }
             } else {
                 console.error('Login failed:', data.error);
             }
