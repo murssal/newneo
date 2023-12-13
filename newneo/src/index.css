@@ -23,6 +23,7 @@ header {
 body {
   font-family: 'Heffaklump', sans-serif;
   font-weight: 600; /* Numeric value for bold */
+  background-image: url('https://wallpapercave.com/wp/wp11139121.jpg');
 }
 
 /* login forms */
@@ -31,8 +32,8 @@ form {
   max-width: 300px;
   margin: 0 auto;
   padding: 50px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 50px;
+  background-color: #f5d578;
 }
 
 label {
@@ -84,8 +85,7 @@ button:hover {
   max-width: 100%;
   margin: 0 auto;
   padding: 50px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 50px;
 }
 
 .form-container {
