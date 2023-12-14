@@ -4,6 +4,8 @@ import './index.css';
 const LoginForm = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,6 +25,8 @@ const LoginForm = ({ onLogin }) => {
 
             if (response.ok) {
                 console.log('Login successful:', data);
+                setSuccessMessage('Login successful!');
+                setErrorMessage('');
                
                 
                 // Call the callback prop if provided
@@ -31,9 +35,13 @@ const LoginForm = ({ onLogin }) => {
                 }
             } else {
                 console.error('Login failed:', data.error);
+                setErrorMessage('Login failed. Please check your credentials and try again.');
+                setSuccessMessage('');
             }
         } catch (error) {
             console.error('Error during login:', error.message);
+            setErrorMessage('An error occurred. Please try again.');
+            setSuccessMessage('');
         }
     };
 
@@ -41,6 +49,8 @@ const LoginForm = ({ onLogin }) => {
         <form onSubmit={handleSubmit}>
             <img alt="login" class="formImg" src={"https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/login.gif?v=1702431752703"}>
             </img>
+            {errorMessage && <div className="error-message">{errorMessage}</div>}
+            {successMessage && <div className="success-message">{successMessage}</div>}
             <label>
                 Username:
                 <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
