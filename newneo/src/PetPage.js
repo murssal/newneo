@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./PetPage.css";
 
 const PetPage = ({ user }) => {
   console.log("User ID:", user?.id);
-<<<<<<< HEAD
   const [stats, setStats] = useState({
     name: "",
     type: "",
@@ -13,27 +12,21 @@ const PetPage = ({ user }) => {
     image_data: "",
   });
   const [error, setError] = useState(null);
-=======
-  const [pets, setPets] = useState([]);
->>>>>>> c40d6d5e0160ef288658782e982b0da59b57d336
 
   // Use useNavigate directly in the component
   const navigate = useNavigate();
 
-  // Define the updateHunger function for a specific pet
-  const updateHunger = (petId) => {
-    setPets((prevPets) => {
-      return prevPets.map((pet) => {
-        if (pet.pet_id === petId && pet.health < 100) {
-          const updatedHealth = Math.min(pet.health + 10, 100);
-          return {
-            ...pet,
-            health: updatedHealth,
-          };
-        }
-        return pet;
-      });
-    });
+  // Define the updateHunger function
+  const updateHunger = () => {
+    // Assuming stats.health is the hunger level
+    if (stats.health < 100) {
+      // Update hunger only if it's less than 100
+      const updatedHunger = Math.min(stats.health + 10, 100);
+      setStats((prevStats) => ({
+        ...prevStats,
+        health: updatedHunger,
+      }));
+    }
   };
 
   // Define the updatePetHunger function
@@ -85,7 +78,6 @@ const PetPage = ({ user }) => {
   useEffect(() => {
     // Fetch user pets when the component mounts
     fetch("http://localhost:5000/api/user-pets", { credentials: "include" })
-<<<<<<< HEAD
       .then((response) => response.json())
       .then((data) => {
         // Assuming there is only one pet
@@ -128,47 +120,6 @@ const PetPage = ({ user }) => {
       <div className="left">
         <button onClick={() => updatePetHunger()}>Feed</button>
         <button onClick={() => updateHappiness()}>Play</button>
-=======
-        .then((response) => response.json())
-        .then((data) => {
-          setPets(data.pets);
-        })
-        .catch((error) => console.error("Error fetching user pets:", error));
-  }, []);
-
-  return (
-      <div className={"petBackgroundFull"}>
-        {pets.map((pet) => (
-            <div key={pet.pet_id} className={"petpageBG"}>
-              <div className="right">
-                <h2>{pet.pet_name}</h2>
-                <table>
-                  <tbody>
-                  <tr>
-                    <td>Type:</td>
-                    <td>{pet.pet_type}</td>
-                  </tr>
-                  <tr>
-                    <td>Health:</td>
-                    <td>{pet.health}</td>
-                  </tr>
-                  <tr>
-                    <td>Happiness:</td>
-                    <td>{pet.happiness}</td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div className="center">
-                <img src={pet.image_data} alt={`Pet ${pet.pet_id}`} />
-              </div>
-              <div className="left">
-                <button onClick={() => updateHunger(pet.pet_id)}>Feed</button>
-                <button onClick={() => updateHappiness(pet.pet_id)}>Play</button>
-              </div>
-            </div>
-        ))}
->>>>>>> c40d6d5e0160ef288658782e982b0da59b57d336
       </div>
     </div>
   );
