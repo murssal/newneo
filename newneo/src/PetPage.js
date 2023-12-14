@@ -24,7 +24,14 @@ const PetPage = ({ user }) => {
   useEffect(() => {
     // Fetch user pets when the component mounts
     fetch("http://localhost:5000/api/user-pets", { credentials: "include" })
-      .then((response) => response.json())
+      .then((response) => {
+        console.log("Raw Response:", response); // Log the raw response
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+
       .then((data) => {
         // Assuming there is only one pet
         const pet = data.pets[0];
