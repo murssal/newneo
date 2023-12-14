@@ -27,7 +27,7 @@ const LoginForm = ({ onLogin }) => {
                 
                 // Call the callback prop if provided
                 if (onLogin) {
-                    onLogin();
+                    onLogin(data.user);
                 }
             } else {
                 console.error('Login failed:', data.error);

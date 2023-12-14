@@ -22,6 +22,27 @@ const corsOptions = {
   credentials: true,
 };
 
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
+
+// Middleware to check if the user is authenticated
+const authenticateUser = (req, res, next) => {
+  const user = req.session.user;
+
+  if (!user || !user.id) {
+    return res.status(401).json({ error: 'User not authenticated.' });
+  }
+
+  next(); // Continue to the next middleware or route handler
+};
+
 app.use(cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, 'newneo')));
@@ -49,6 +70,8 @@ app.use(
   })
 );
 
+
+
 // Add debugging middleware
 app.use((req, res, next) => {
   console.log('Session data:', req.session);
@@ -66,15 +89,7 @@ app.post('/api/users', async (req, res) => {
       return res.status(400).json({ error: 'Username, password, and email are required.' });
     }
 
-    const pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-    });
+  
 
     const connection = await pool.getConnection();
 
@@ -102,15 +117,7 @@ app.post('/api/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password are required.' });
     }
 
-    const pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-    });
+  
 
     const connection = await pool.getConnection();
 
@@ -138,16 +145,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 
-// Middleware to check if the user is authenticated
-const authenticateUser = (req, res, next) => {
-  const user = req.session.user;
 
-  if (!user || !user.id) {
-    return res.status(401).json({ error: 'User not authenticated.' });
-  }
-
-  next(); // Continue to the next middleware or route handler
-};
 
 // New user-pets insert route
 app.post('/api/user-pets', authenticateUser, async (req, res) => {
@@ -160,15 +158,7 @@ app.post('/api/user-pets', authenticateUser, async (req, res) => {
 
     const user_id = req.session.user.id;
 
-    const pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-    });
+    
 
     const connection = await pool.getConnection();
 
@@ -184,31 +174,16 @@ app.post('/api/user-pets', authenticateUser, async (req, res) => {
   }
 });
 
-// User logout route
-app.post('/api/logout', (req, res) => {
-  // Destroy the session
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Error during logout:', err.message);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.status(200).json({ message: 'Logout successful!' });
-    }
-  });
-});
+
 
 // route to fetch items
-app.get('/api/items', async (req, res) => {
+app.get('/api/items', authenticateUser, async (req, res) => {
+  console.log('/api/items - Session:', req.session);
   try {
-    const pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-    });
+
+    const user_id = req.session.user.id;
+
+  
 
     const connection = await pool.getConnection();
 
@@ -225,19 +200,14 @@ app.get('/api/items', async (req, res) => {
 });
 
 app.post('/api/buy-item', authenticateUser, async (req, res) => {
+  console.log('/api/buy-item - Session:', req.session);
+  
   try {
-    const pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-    });
+   
 
     const { itemId } = req.body;
     const user_id = req.session.user.id;
+    console.log('print user id in queryTest for debugging', user_id);
 
     if (!user_id || !itemId) {
       return res.status(400).json({ error: 'User ID and item ID are required.' });
@@ -248,9 +218,10 @@ app.post('/api/buy-item', authenticateUser, async (req, res) => {
     try {
       // Start a transaction
       await connection.beginTransaction();
-
+      console.log('transaction started...waiting on query...');
       // Check the user's neopoints
       const [userResult] = await connection.execute('SELECT neopoints FROM users WHERE user_id = ?', [user_id]);
+      console.log('print user neopoints in queryTest for debugging', userResult);
 
       if (!userResult || userResult.length === 0) {
         // User not found
@@ -299,6 +270,19 @@ app.post('/api/buy-item', authenticateUser, async (req, res) => {
   }
 });
 
+
+// User logout route
+app.post('/api/logout', (req, res) => {
+  // Destroy the session
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error during logout:', err.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.status(200).json({ message: 'Logout successful!' });
+    }
+  });
+});
 
 // Serve the default public/index.html created by Create React App
 app.get('*', (req, res) => {

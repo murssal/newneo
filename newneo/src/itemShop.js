@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './ItemShop.css';
 
-const ItemShop = () => {
+const ItemShop = ({ user }) => {
     const [items, setItems] = useState([]);
-    const [user_id, setUserId] = useState(null);
 
     useEffect(() => {
-        // Fetch user ID from the server-side when the component mounts
-        fetch('http://localhost:5000/api/buy-item', {
+        console.log('User ID:', user?.id);
+        // Fetch items
+        fetch('http://localhost:5000/api/items', {
             credentials: 'include',
         })
             .then(response => {
@@ -16,34 +16,15 @@ const ItemShop = () => {
                 }
                 return response.json();
             })
-            .then(data => {
-                if (data.user_id) {
-                    setUserId(data.user_id);
-                } else {
-                    console.error('User ID not available.');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching user info:', error);
-                console.error('Response text:', error.response?.text); // Log the response text
-            });
-
-        // Fetch items
-        fetch('http://localhost:5000/api/items')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
             .then(data => setItems(data))
             .catch(error => console.error('Error fetching data:', error));
-    }, []);
+    }, [user]);
 
     const handleBuyClick = async (itemId) => {
         try {
             // Check if the user ID is available before making a purchase
-            if (!user_id) {
+            console.log('User ID:', user?.id);
+            if (!user?.id) {
                 console.error('User ID not available to make a purchase.');
                 return;
             }
@@ -54,10 +35,11 @@ const ItemShop = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    user_id: user?.id,
                     itemId,
                 }),
                 credentials: 'include',
-            });
+            }).catch(error => console.error('Fetch error:', error));
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
