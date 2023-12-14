@@ -71,6 +71,9 @@ const Header = () => {
                                 <Link to="/pets" onClick={() => handleItemClick('CreatePet')}>create a pet</Link>
                             </li>
                             <li>
+                                <Link to="/PetPage" onClick={() => handleItemClick('PetPage')}>my pets</Link>
+                            </li>
+                            <li>
                                 <button onClick={logout}>Log Out</button>
                             </li>
                         </>

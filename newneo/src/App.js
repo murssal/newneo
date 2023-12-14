@@ -51,6 +51,7 @@ const App = () => {
                         <Route path="/account" element={<Account onLoad={handleLoadAccount}/>} />
                         <Route path="/logout-confirmation" element={<LogoutConfirmation />} />
                         <Route path="/itemshop" element={<ItemShop user={user} />} />
+                        <Route path="/PetPage" element={<PetPage user={user} />} />
                     </Routes>
                 </div>
             </Router>
