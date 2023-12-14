@@ -152,12 +152,33 @@ app.get('/api/user-pets', authenticateUser, async (req, res) => {
 
     const connection = await pool.getConnection();
 
-    const [pets] = await connection.execute('SELECT pet_id, pet_name, pet_type, health, happiness, image_data FROM user_pets WHERE user_id = ?', [user_id]);
-    console.log('User Pets:', pets); // Log the pets to the console
+    // Use parameterized queries to prevent SQL injection
+    const selectQuery = `
+      SELECT pet_id, pet_name, pet_type, health, happiness, image_data
+      FROM user_pets
+      WHERE user_id = ?
+    `;
+
+    const [pets] = await connection.execute(selectQuery, [user_id]);
 
     connection.release();
 
-    res.status(200).json({ pets });
+    // Check if there are pets
+    if (!pets || pets.length === 0) {
+      return res.status(404).json({ error: 'No pets found for the user.' });
+    }
+
+    // Assuming there is only one pet for simplicity
+    const pet = pets[0];
+
+    res.status(200).json({
+      pet_id: pet.pet_id,
+      pet_name: pet.pet_name,
+      pet_type: pet.pet_type,
+      health: pet.health,
+      happiness: pet.happiness,
+      image_data: pet.image_data,
+    });
   } catch (error) {
     console.error('Error fetching user pets:', error.message);
     res.status(500).json({ error: 'Internal Server Error' });

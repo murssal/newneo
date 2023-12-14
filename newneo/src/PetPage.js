@@ -10,23 +10,14 @@ const PetPage = () => {
         image_data: '',
     });
 
-    // Define the updateHunger function
-    const updateHunger = () => {
-        // Implement logic to update hunger level
-    };
-
-    // Define the updateHappiness function
-    const updateHappiness = () => {
-        // Implement logic to update happiness level
-    };
-
     useEffect(() => {
-        // Fetch user pets when the component mounts
-        fetch('/api/user-pets')
+        console.log('Fetching user pets...');
+        fetch('http://localhost:5000/api/user-pets')
             .then((response) => response.json())
             .then((data) => {
-                // Assuming there is only one pet
+                console.log('Data from API:', data);
                 const pet = data.pets[0];
+                console.log('Pet data:', pet);
                 setStats({
                     name: pet.pet_name,
                     type: pet.pet_type,
@@ -37,6 +28,17 @@ const PetPage = () => {
             })
             .catch((error) => console.error('Error fetching user pets:', error));
     }, []);
+
+
+    const updateHunger = () => {
+        // Implement logic to update hunger level
+        console.log('Updating hunger...');
+    };
+
+    const updateHappiness = () => {
+        // Implement logic to update happiness level
+        console.log('Updating happiness...');
+    };
 
     return (
         <div className="petpageBG">
@@ -63,8 +65,8 @@ const PetPage = () => {
                 <img src={stats.image_data} alt="Pet" />
             </div>
             <div className="left">
-                <button onClick={() => updateHunger()}>Feed</button>
-                <button onClick={() => updateHappiness()}>Play</button>
+                <button onClick={updateHunger}>Feed</button>
+                <button onClick={updateHappiness}>Play</button>
             </div>
         </div>
     );
