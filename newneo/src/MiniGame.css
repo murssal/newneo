@@ -1,0 +1,33 @@
+.minigame-container {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.choices-container {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+select {
+    padding: 5px;
+    font-size: 14px;
+}
+
+button {
+    padding: 8px 15px;
+    font-size: 14px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.result-container {
+    margin-top: 20px;
+    font-weight: bold;
+}

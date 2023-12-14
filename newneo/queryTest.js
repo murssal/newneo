@@ -223,39 +223,34 @@ app.get('/api/items', async (req, res) => {
   }
 });
 
-app.get('/getRandomNeopet', async (req, res) => {
-  console.log('Received request for /getRandomNeopet');
+// Rock, Paper, Scissors route
+app.post('/playRockPaperScissors', authenticateUser, async(req, res) => {
+  const userChoice = req.body.userChoice;
 
-  const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-  });
-
-  const connection = await pool.getConnection();
-  try {
-    const selectQuery = 'SELECT image_url, correct_answer FROM guesser ORDER BY RAND() LIMIT 1';
-    const [results] = await connection.execute(selectQuery);
-
-    if (results.length === 0) {
-      res.status(404).json({ error: 'No Neopets available.' });
-    } else {
-      const neopetData = results[0];
-      res.status(200).json({
-        image_url: neopetData.image_url,
-        correct_answer: neopetData.correct_answer,
-      });
-    }
-  } catch (error) {
-    console.error('Error fetching random Neopet:', error.message);
-    res.status(500).json({ error: 'Internal Server Error', details: error.message });
-  } finally {
-    connection.release();
+  if (!userChoice || !['rock', 'paper', 'scissors'].includes(userChoice)) {
+    return res.status(400).json({ error: 'Invalid user choice.' });
   }
+
+  // Generate a random choice for the computer
+  const computerChoices = ['rock', 'paper', 'scissors'];
+  const computerChoice = computerChoices[Math.floor(Math.random() * computerChoices.length)];
+
+  // Determine the winner
+  let result;
+  if (userChoice === computerChoice) {
+    result = "It's a tie!";
+  } else if (
+      (userChoice === 'rock' && computerChoice === 'scissors') ||
+      (userChoice === 'paper' && computerChoice === 'rock') ||
+      (userChoice === 'scissors' && computerChoice === 'paper')
+  ) {
+    result = 'Congratulations! You win!';
+    // Add logic here to update the user's neopoints (e.g., add 100 neopoints)
+  } else {
+    result = 'Sorry, you lose. Try again!';
+  }
+
+  res.json({ result, computerChoice, win: result.includes('win') });
 });
 
 
