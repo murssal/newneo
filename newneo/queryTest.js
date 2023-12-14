@@ -386,6 +386,46 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
   }
 });
 
+// New route for updating pet hunger
+app.post("/api/update-pet-hunger", authenticateUser, async (req, res) => {
+  try {
+    const user_id = req.session.user.id;
+    const connection = await pool.getConnection();
+
+    // Fetch current health from the database
+    const [user] = await connection.execute(
+      "SELECT health FROM user_pets WHERE user_id = ?",
+      [user_id]
+    );
+
+    if (!user || user.length === 0) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    const currentHealth = user[0].health;
+    console.log(currentHealth);
+
+    // Calculate the new health (assuming it's being increased by 10)
+    const newHealth = currentHealth + 10;
+    console.log(newHealth);
+
+    // Update health only if the new health is 10 higher than the current value
+    if (newHealth > currentHealth) {
+      await connection.execute(
+        "UPDATE user_pets SET health = ? WHERE user_id = ?",
+        [newHealth, user_id]
+      );
+
+      res.status(200).json({ message: "Pet hunger updated successfully." });
+    } else {
+      res.status(200).json({ message: "Pet hunger is already at maximum." });
+    }
+  } catch (error) {
+    console.error("Error updating pet hunger:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // get user-pets route
 app.get("/api/user-pets", authenticateUser, async (req, res) => {
   try {
@@ -414,7 +454,6 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 
 // User logout route
 app.post("/api/logout", (req, res) => {
