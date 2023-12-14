@@ -396,8 +396,8 @@ app.post("/api/update-pet-hunger", authenticateUser, async (req, res) => {
 
     // Fetch current health for the specific pet from the database
     const [pet] = await connection.execute(
-        "SELECT health FROM user_pets WHERE user_id = ? AND pet_id = ?",
-        [user_id, petId]
+      "SELECT health FROM user_pets WHERE user_id = ? AND pet_id = ?",
+      [user_id, petId]
     );
 
     if (!pet || pet.length === 0) {
@@ -405,15 +405,17 @@ app.post("/api/update-pet-hunger", authenticateUser, async (req, res) => {
     }
 
     const currentHealth = pet[0].health;
+    console.log(currentHealth);
 
     // Calculate the new health (assuming it's being increased by 10)
     const newHealth = Math.min(currentHealth + 10, 100);
+    console.log(newHealth);
 
     // Update health only if the new health is 10 higher than the current value
     if (newHealth > currentHealth) {
       await connection.execute(
-          "UPDATE user_pets SET health = ? WHERE user_id = ? AND pet_id = ?",
-          [newHealth, user_id, petId]
+        "UPDATE user_pets SET health = ? WHERE user_id = ? AND pet_id = ?",
+        [newHealth, user_id, petId]
       );
 
       res.status(200).json({ message: "Pet hunger updated successfully." });
@@ -436,7 +438,7 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
     const connection = await pool.getConnection();
 
     const selectQuery =
-        "SELECT pet_name, pet_type, image_data FROM user_pets WHERE user_id = ?";
+      "SELECT pet_name, pet_type, image_data FROM user_pets WHERE user_id = ?";
     const [pets] = await connection.execute(selectQuery, [user_id]);
 
     connection.release();
