@@ -1,27 +1,35 @@
 .petpageBG {
   max-width: 700px;
   margin: 0 auto;
-  padding: 50px;
+  padding: 20px;
   border-radius: 50px;
   background-color: #f5d578;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  margin-bottom: 10px;
+}
+
+.petBackgroundFull {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 50px;
+  background-color: #e6b72c;
 }
 
 .left,
 .right {
-  flex: 1; /* Adjust flex value to allocate space */
-  padding: 20px; /* Add padding as desired */
+  flex: 1;
+  padding: 20px;
 }
 
 .center {
-  flex: 1; /* Adjust flex value to allocate space */
+  flex: 1;
   text-align: center;
-  padding: 20px; /* Add padding as desired */
+  padding: 20px;
 }
 
-/* Optional: Style for buttons */
 button {
   margin-bottom: 10px;
 }
