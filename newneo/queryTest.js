@@ -1,13 +1,12 @@
-//Backend Node 
-const express = require('express');
-const path = require('path');
-const mysql = require('mysql2/promise');
-const dotenv = require('dotenv');
-const cors = require('cors'); // Import the cors middleware
-const session = require('express-session');
-const cookieParser = require('cookie-parser');
-const crypto = require('crypto');
-
+//Backend Node
+const express = require("express");
+const path = require("path");
+const mysql = require("mysql2/promise");
+const dotenv = require("dotenv");
+const cors = require("cors"); // Import the cors middleware
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const crypto = require("crypto");
 
 dotenv.config();
 
@@ -18,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 //app.use(cors());
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: "http://localhost:3000",
   credentials: true,
 };
 
@@ -37,7 +36,7 @@ const authenticateUser = (req, res, next) => {
   const user = req.session.user;
 
   if (!user || !user.id) {
-    return res.status(401).json({ error: 'User not authenticated.' });
+    return res.status(401).json({ error: "User not authenticated." });
   }
 
   next(); // Continue to the next middleware or route handler
@@ -45,7 +44,7 @@ const authenticateUser = (req, res, next) => {
 
 app.use(cors(corsOptions));
 
-app.use(express.static(path.join(__dirname, 'newneo')));
+app.use(express.static(path.join(__dirname, "newneo")));
 
 app.use(express.json());
 
@@ -54,7 +53,7 @@ app.use(cookieParser());
 
 // Generate a random secret key
 const generateSecretKey = () => {
-  return crypto.randomBytes(32).toString('hex');
+  return crypto.randomBytes(32).toString("hex");
 };
 
 const secretKey = generateSecretKey(); // Generate once
@@ -70,58 +69,58 @@ app.use(
   })
 );
 
-
-
 // Add debugging middleware
 app.use((req, res, next) => {
-  console.log('Session data:', req.session);
+  console.log("Session data:", req.session);
   next();
 });
 
-
-
 //User Register
-app.post('/api/users', async (req, res) => {
+app.post("/api/users", async (req, res) => {
   try {
     const { username, password, email } = req.body;
 
     if (!username || !password || !email) {
-      return res.status(400).json({ error: 'Username, password, and email are required.' });
+      return res
+        .status(400)
+        .json({ error: "Username, password, and email are required." });
     }
-
-  
 
     const connection = await pool.getConnection();
 
-    const insertQuery = 'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
-    const [result] = await connection.execute(insertQuery, [username, password, email]);
-
-  
+    const insertQuery =
+      "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+    const [result] = await connection.execute(insertQuery, [
+      username,
+      password,
+      email,
+    ]);
 
     connection.release();
 
-    res.status(200).json({ message: 'User added successfully!' });
+    res.status(200).json({ message: "User added successfully!" });
   } catch (error) {
-    console.error('Error adding user:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error adding user:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 // User login route
 
-app.post('/api/login', async (req, res) => {
+app.post("/api/login", async (req, res) => {
   try {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password are required.' });
+      return res
+        .status(400)
+        .json({ error: "Username and password are required." });
     }
-
-  
 
     const connection = await pool.getConnection();
 
-    const selectQuery = 'SELECT * FROM users WHERE username = ? AND password = ?';
+    const selectQuery =
+      "SELECT * FROM users WHERE username = ? AND password = ?";
     const [users] = await connection.execute(selectQuery, [username, password]);
 
     if (users.length === 1) {
@@ -132,116 +131,142 @@ app.post('/api/login', async (req, res) => {
         email: users[0].email,
       };
 
-      res.status(200).json({ message: 'Login successful!', user: req.session.user });
+      res
+        .status(200)
+        .json({ message: "Login successful!", user: req.session.user });
     } else {
-      res.status(401).json({ error: 'Invalid credentials.' });
+      res.status(401).json({ error: "Invalid credentials." });
     }
 
     connection.release();
   } catch (error) {
-    console.error('Error during login:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error during login:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-
-
-
 // New user-pets insert route
-app.post('/api/user-pets', authenticateUser, async (req, res) => {
+app.post("/api/user-pets", authenticateUser, async (req, res) => {
   try {
     const { pet_name, pet_type, image_data } = req.body;
 
     if (!pet_name || !pet_type) {
-      return res.status(400).json({ error: 'Pet name and pet type are required.' });
+      return res
+        .status(400)
+        .json({ error: "Pet name and pet type are required." });
     }
 
     const user_id = req.session.user.id;
 
-    
-
     const connection = await pool.getConnection();
 
-    const insertQuery = 'INSERT INTO user_pets (user_id, pet_name, pet_type, image_data) VALUES (?, ?, ?, ?)';
-    const [result] = await connection.execute(insertQuery, [user_id, pet_name, pet_type, image_data]);
+    const insertQuery =
+      "INSERT INTO user_pets (user_id, pet_name, pet_type, image_data) VALUES (?, ?, ?, ?)";
+    const [result] = await connection.execute(insertQuery, [
+      user_id,
+      pet_name,
+      pet_type,
+      image_data,
+    ]);
 
     connection.release();
 
-    res.status(200).json({ message: 'Pet added successfully!' });
+    res.status(200).json({ message: "Pet added successfully!" });
   } catch (error) {
-    console.error('Error adding pet:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error adding pet:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-
-
 // route to fetch items
-app.get('/api/items', authenticateUser, async (req, res) => {
-  console.log('/api/items - Session:', req.session);
+app.get("/api/items", authenticateUser, async (req, res) => {
+  console.log("/api/items - Session:", req.session);
   try {
-
     const user_id = req.session.user.id;
-
-  
 
     const connection = await pool.getConnection();
 
-    const selectQuery = 'SELECT item_id, item_name, item_photo, price FROM items';
+    const selectQuery =
+      "SELECT item_id, item_name, item_photo, price FROM items";
     const [items] = await connection.execute(selectQuery);
 
     connection.release();
 
     res.status(200).json(items);
   } catch (error) {
-    console.error('Error fetching items:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching items:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 // Rock, Paper, Scissors route
-app.post('/playRockPaperScissors', authenticateUser, async(req, res) => {
+app.post("/api/playRockPaperScissors", authenticateUser, async (req, res) => {
+  console.log("/playRockPaperScissors - Session:", req.session);
+  const connection = await pool.getConnection();
+  const user_id = req.session.user.id;
   const userChoice = req.body.userChoice;
 
-  if (!userChoice || !['rock', 'paper', 'scissors'].includes(userChoice)) {
-    return res.status(400).json({ error: 'Invalid user choice.' });
+  if (!userChoice || !["rock", "paper", "scissors"].includes(userChoice)) {
+    return res.status(400).json({ error: "Invalid user choice." });
   }
 
   // Generate a random choice for the computer
-  const computerChoices = ['rock', 'paper', 'scissors'];
-  const computerChoice = computerChoices[Math.floor(Math.random() * computerChoices.length)];
+  const computerChoices = ["rock", "paper", "scissors"];
+  const computerChoice =
+    computerChoices[Math.floor(Math.random() * computerChoices.length)];
 
   // Determine the winner
   let result;
   if (userChoice === computerChoice) {
-    result = "It's a tie!";
+    result = "It's a tie! Try again!";
   } else if (
-      (userChoice === 'rock' && computerChoice === 'scissors') ||
-      (userChoice === 'paper' && computerChoice === 'rock') ||
-      (userChoice === 'scissors' && computerChoice === 'paper')
+    (userChoice === "rock" && computerChoice === "scissors") ||
+    (userChoice === "paper" && computerChoice === "rock") ||
+    (userChoice === "scissors" && computerChoice === "paper")
   ) {
-    result = 'Congratulations! You win!';
+    // Check the user's neopoints
+    const [userResult] = await connection.execute(
+      "SELECT neopoints FROM users WHERE user_id = ?",
+      [user_id]
+    );
+    console.log(
+      "print user neopoints in queryTest for debugging mini game",
+      userResult
+    );
+
+    if (!userResult || userResult.length === 0) {
+      // User not found
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    const userNeopoints = userResult[0].neopoints;
+    const updatedNeopoints = userNeopoints + 100;
+    await pool.execute("UPDATE users SET neopoints = ? WHERE user_id = ?", [
+      updatedNeopoints,
+      user_id,
+    ]);
+    result = "Congratulations! You win! You have been awarded 100 neopoints!";
     // Add logic here to update the user's neopoints (e.g., add 100 neopoints)
   } else {
-    result = 'Sorry, you lose. Try again!';
+    result = "Sorry, you lose. Try again!";
   }
 
-  res.json({ result, computerChoice, win: result.includes('win') });
+  res.json({ result, computerChoice, win: result.includes("win") });
 });
 
-app.post('/api/buy-item', authenticateUser, async (req, res) => {
-  console.log('/api/buy-item - Session:', req.session);
-  
-  try {
-   
+app.post("/api/buy-item", authenticateUser, async (req, res) => {
+  console.log("/api/buy-item - Session:", req.session);
 
+  try {
     const { itemId } = req.body;
-    console.log('Item ID from request:', itemId);
+    console.log("Item ID from request:", itemId);
     const user_id = req.session.user.id;
-    console.log('print user id in queryTest for debugging', user_id);
+    console.log("print user id in queryTest for debugging", user_id);
 
     if (!user_id || !itemId) {
-      return res.status(400).json({ error: 'User ID and item ID are required.' });
+      return res
+        .status(400)
+        .json({ error: "User ID and item ID are required." });
     }
 
     const connection = await pool.getConnection();
@@ -249,95 +274,114 @@ app.post('/api/buy-item', authenticateUser, async (req, res) => {
     try {
       // Start a transaction
       await connection.beginTransaction();
-      console.log('transaction started...waiting on query...');
+      console.log("transaction started...waiting on query...");
       // Check the user's neopoints
-      const [userResult] = await connection.execute('SELECT neopoints FROM users WHERE user_id = ?', [user_id]);
-      console.log('print user neopoints in queryTest for debugging', userResult);
+      const [userResult] = await connection.execute(
+        "SELECT neopoints FROM users WHERE user_id = ?",
+        [user_id]
+      );
+      console.log(
+        "print user neopoints in queryTest for debugging",
+        userResult
+      );
 
       if (!userResult || userResult.length === 0) {
         // User not found
-        return res.status(404).json({ error: 'User not found.' });
+        return res.status(404).json({ error: "User not found." });
       }
 
       const userNeopoints = userResult[0].neopoints;
       // Example getItemPrice implementation
-async function getItemPrice(connection, itemId) {
-  try {
-      const [result] = await connection.execute('SELECT price FROM items WHERE item_id = ?', [itemId]);
+      async function getItemPrice(connection, itemId) {
+        try {
+          const [result] = await connection.execute(
+            "SELECT price FROM items WHERE item_id = ?",
+            [itemId]
+          );
 
-      if (!result || result.length === 0) {
-          // Item not found
-          console.error('Item not found for itemId:', itemId);
-          return null;
+          if (!result || result.length === 0) {
+            // Item not found
+            console.error("Item not found for itemId:", itemId);
+            return null;
+          }
+
+          const itemPrice = result[0].price;
+          console.log(
+            "Item price retrieved for itemId:",
+            itemId,
+            "-",
+            itemPrice
+          );
+          return itemPrice;
+        } catch (error) {
+          console.error("Error getting item price:", error.message);
+          throw error; // You may choose to handle or propagate the error based on your needs
+        }
       }
-
-      const itemPrice = result[0].price;
-      console.log('Item price retrieved for itemId:', itemId, '-', itemPrice);
-      return itemPrice;
-  } catch (error) {
-      console.error('Error getting item price:', error.message);
-      throw error; // You may choose to handle or propagate the error based on your needs
-  }
-}
-
 
       // Get the item price
       const itemPrice = await getItemPrice(connection, itemId);
 
       if (itemPrice === null) {
         // Item not found
-        return res.status(404).json({ error: 'Item not found.' });
+        return res.status(404).json({ error: "Item not found." });
       }
 
       // Check if the user has enough neopoints to buy the item
       if (userNeopoints >= itemPrice) {
         // Deduct the neopoints from the user
         const remainingNeopoints = userNeopoints - itemPrice;
-        await connection.execute('UPDATE users SET neopoints = ? WHERE user_id = ?', [remainingNeopoints, user_id]);
+        await connection.execute(
+          "UPDATE users SET neopoints = ? WHERE user_id = ?",
+          [remainingNeopoints, user_id]
+        );
 
         // Add the item to the user's pocket
-        await connection.execute('INSERT INTO user_pocket (user_id, item_id, quantity) VALUES (?, ?, 1)', [user_id, itemId]);
+        await connection.execute(
+          "INSERT INTO user_pocket (user_id, item_id, quantity) VALUES (?, ?, 1)",
+          [user_id, itemId]
+        );
 
         // Commit the transaction
         await connection.commit();
 
-        res.status(200).json({ message: 'Item purchased successfully!' });
+        res.status(200).json({ message: "Item purchased successfully!" });
       } else {
-        res.status(403).json({ error: 'Insufficient neopoints to buy the item.' });
+        res
+          .status(403)
+          .json({ error: "Insufficient neopoints to buy the item." });
       }
-
     } catch (error) {
       // If an error occurs, rollback the transaction
       await connection.rollback();
-      console.error('Error buying item:', error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error("Error buying item:", error.message);
+      res.status(500).json({ error: "Internal Server Error" });
     } finally {
       // Always release the connection back to the pool, whether there was an error or not
       connection.release();
     }
   } catch (error) {
-    console.error('Error buying item:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error buying item:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-
 // User logout route
-app.post('/api/logout', (req, res) => {
+app.post("/api/logout", (req, res) => {
   // Destroy the session
   req.session.destroy((err) => {
     if (err) {
-      console.error('Error during logout:', err.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error("Error during logout:", err.message);
+      res.status(500).json({ error: "Internal Server Error" });
     } else {
-      res.status(200).json({ message: 'Logout successful!' });
+      res.status(200).json({ message: "Logout successful!" });
     }
   });
 });
 
 // Serve the default public/index.html created by Create React App
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.listen(PORT, () => {
