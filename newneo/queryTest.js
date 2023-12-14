@@ -367,25 +367,24 @@ app.post("/api/buy-item", authenticateUser, async (req, res) => {
 
 app.get("/api/user-pets", authenticateUser, async (req, res) => {
   try {
-    const user_id = req.session.user.id;
-
+    const userId = req.session.user.id;
     const connection = await pool.getConnection();
 
-    const selectQuery =
-      "SELECT pet_id, pet_name, pet_type, health, happiness, image_data FROM user_pets WHERE user_id = ?";
-    const [pets] = await connection.execute(selectQuery, [user_id]);
+    // Fetch user pets
+    const [userPets] = await connection.execute(
+        "SELECT * FROM pets WHERE user_id = ?",
+        [userId]
+    );
 
-    connection.release();
-
-    console.log("User Pets:", pets); // Log the pets to the console
-
-    res.status(200).json({ pets });
+    // Send the user pets as a JSON response
+    res.json({ pets: userPets });
   } catch (error) {
     console.error("Error fetching user pets:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
+<<<<<<< HEAD
 // New route for updating pet hunger
 app.post("/api/update-pet-hunger", authenticateUser, async (req, res) => {
   try {
@@ -454,6 +453,37 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+=======
+//
+// // get user-pets route
+// app.get("/api/user-pets", authenticateUser, async (req, res) => {
+//   try {
+//     const { username } = req.body;
+//
+//     if (!pet_name || !pet_type) {
+//       return res
+//         .status(400)
+//         .json({ error: "Pet name and pet type are required." });
+//     }
+//
+//     const user_id = req.session.user.id;
+//
+//     const connection = await pool.getConnection();
+//
+//     const selectQuery =
+//       "SELECT user_pets (user_id, pet_name, pet_type, image_data) where username = ?";
+//     const [pets] = await connection.execute(selectQuery, [username]);
+//
+//     connection.release();
+//
+//     res.status(200).json({ message: "Pets retrieved successfully!" });
+//     return pets;
+//   } catch (error) {
+//     console.error("Error finding pets:", error.message);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
+>>>>>>> c40d6d5e0160ef288658782e982b0da59b57d336
 
 // User logout route
 app.post("/api/logout", (req, res) => {
