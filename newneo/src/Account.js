@@ -1,8 +1,14 @@
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import React, { useState, useEffect } from 'react';
 import './index.css';
 
 const Account = () => {
   const [pets, setPets] = useState([]);
+
+  const handleItemClick = (item) => {
+    // Handle the click event for each menu item
+    console.log(`Clicked on ${item}`);
+  };
 
   useEffect(() => {
     // Function to retrieve user pets from the backend
@@ -37,8 +43,12 @@ const Account = () => {
         {pets.map((pet) => (
           <li key={pet.id}>
             <strong>Name:</strong> {pet.name}, <strong>Type:</strong> {pet.type}
-          </li>
+          </li>          
         ))}
+
+        <li>
+            <Link to="/petpage" onClick={() => handleItemClick('PetPage')}>pet page</Link>
+        </li>
       </ul>
     </div>
   );
