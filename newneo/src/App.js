@@ -49,6 +49,7 @@ const App = () => {
                         <Route path="/login" element={<LoginForm onLogin={handleLoginSubmit} />} />
                         <Route path="/pets" element={<PetForm onSubmit={handlePetSubmit} />} />
                         <Route path="/account" element={<Account onLoad={handleLoadAccount}/>} />
+                        <Route path="/petpage" element={<PetPage />} />
                         <Route path="/logout-confirmation" element={<LogoutConfirmation />} />
                         <Route path="/itemshop" element={<ItemShop user={user} />} />
                     </Routes>
