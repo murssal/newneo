@@ -1,14 +1,13 @@
 // Header.js
 
-
-
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link, useNavigate } from 'react-router-dom'; // Import Link and useHistory from react-router-dom
 import { useUser } from './UserContext';
 import './Header.css'; // Import the CSS file
 
 const Header = () => {
     const { isLoggedIn, logout } = useUser();
+    const navigate = useNavigate(); // Access the history object
 
     const handleItemClick = (item) => {
         // Handle the click event for each menu item
@@ -24,7 +23,8 @@ const Header = () => {
 
             if (response.ok) {
                 console.log('Logout successful');
-                // You can perform additional actions after logout, such as redirecting the user
+                // Redirect to the logout confirmation page
+                navigate('/logout-confirmation');
             } else {
                 console.error('Logout failed:', response.statusText);
             }

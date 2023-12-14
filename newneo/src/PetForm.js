@@ -5,6 +5,8 @@ const PetForm = ({ userId, onPetAdded }) => {
   const [petType, setPetType] = useState('');
   const [petName, setPetName] = useState('');
   const [imageData, setImageData] = useState('');
+  const [error, setError] = useState(null); // New error state
+  const [successMessage, setSuccessMessage] = useState(null); //success message
 
   useEffect(() => {
     if (petOptions.length > 0) {
@@ -26,6 +28,7 @@ const PetForm = ({ userId, onPetAdded }) => {
       setImageData(imageUrl);
     } catch (error) {
       console.error('Error loading image data:', error.message);
+      setError('Error loading image data'); // Set error state
     }
   };
 
@@ -58,14 +61,21 @@ const PetForm = ({ userId, onPetAdded }) => {
 
       if (response.ok) {
         console.log('Pet added successfully!');
+        setError(null); // Clear error state on success
+        setSuccessMessage('Pet added successfully!'); // Set success message
         if (onPetAdded) {
           onPetAdded();
         }
       } else {
         console.error('Failed to add pet.');
+        setError('Failed to add pet, you must be logged in to create a pet!'); // Set error state
+        setSuccessMessage(null); // Clear success message on failure
+
       }
     } catch (error) {
       console.error('An error occurred:', error.message);
+      setError('An error occurred, its us, not you!'); // Set error state
+      setSuccessMessage(null); // Clear success message on failure
     }
   };
 
@@ -73,6 +83,8 @@ const PetForm = ({ userId, onPetAdded }) => {
       <div>
         <form className="petform-container" onSubmit={handleSubmit}>
           <h2>Add a Pet</h2>
+          {error && <div className="error-message">{error}</div>}
+          {successMessage && <div className="success-message">{successMessage}</div>}
           <div className="pet-options">
             {petOptions.map((pet) => (
                 <div key={pet.value} className="pet-option">
