@@ -1,5 +1,5 @@
 // App.js
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './Header';
 import RegisterForm from './RegisterForm';
@@ -11,6 +11,7 @@ import ItemShop from './itemShop';
 import LogoutConfirmation from './LogoutConfirmation'
 
 const App = () => {
+    const [user, setUser] = useState(null);
     const handleRegisterSubmit = (formData) => {
         console.log('Form Data:', formData);
         // Add logic to send registration data to the server
@@ -19,6 +20,7 @@ const App = () => {
     const handleLoginSubmit = (user) => {
         console.log('User logged in:', user);
         // Add logic to handle user login in your app (e.g., update context)
+        setUser(user);
     };
 
     const handlePetSubmit = (petName) => {
@@ -39,8 +41,8 @@ const App = () => {
                         <Route path="/register" element={<RegisterForm onSubmit={handleRegisterSubmit} />} />
                         <Route path="/login" element={<LoginForm onLogin={handleLoginSubmit} />} />
                         <Route path="/pets" element={<PetForm onSubmit={handlePetSubmit} />} />
-                        <Route path="/itemshop" element={<ItemShop />} />
                         <Route path="/logout-confirmation" element={<LogoutConfirmation />} />
+                        <Route path="/itemshop" element={<ItemShop user={user} />} />
                     </Routes>
                 </div>
             </Router>
