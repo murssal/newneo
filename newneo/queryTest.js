@@ -385,36 +385,72 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+//
+// // get user-pets route
+// app.get("/api/user-pets", authenticateUser, async (req, res) => {
+//   try {
+//     const { username } = req.body;
+//
+//     if (!pet_name || !pet_type) {
+//       return res
+//         .status(400)
+//         .json({ error: "Pet name and pet type are required." });
+//     }
+//
+//     const user_id = req.session.user.id;
+//
+//     const connection = await pool.getConnection();
+//
+//     const selectQuery =
+//       "SELECT user_pets (user_id, pet_name, pet_type, image_data) where username = ?";
+//     const [pets] = await connection.execute(selectQuery, [username]);
+//
+//     connection.release();
+//
+//     res.status(200).json({ message: "Pets retrieved successfully!" });
+//     return pets;
+//   } catch (error) {
+//     console.error("Error finding pets:", error.message);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
-// get user-pets route
-app.get("/api/user-pets", authenticateUser, async (req, res) => {
+app.post("/api/update-Hunger", authenticateUser, async (req, res) => {
   try {
-    const { username } = req.body;
+    const { user_id, updated_hunger } = req.body;
 
-    if (!pet_name || !pet_type) {
-      return res
-        .status(400)
-        .json({ error: "Pet name and pet type are required." });
+    console.log("Received user_id:", user_id);
+
+    // Update the health value for the pet
+    const [result] = await pool.execute(
+        "UPDATE user_pets SET health = ? WHERE pet_id = ?",
+        [updated_hunger, user_id]
+    );
+
+    console.log("Update result:", result);
+
+    if (result.affectedRows === 1) {
+      // Fetch the updated pet information including pet_id
+      const [updatedPet] = await pool.execute(
+          "SELECT pet_id, pet_name, pet_type, health, happiness, image_data FROM user_pets WHERE pet_id = ?",
+          [user_id]
+      );
+
+      console.log("Fetched pet data:", updatedPet);
+
+      // Rest of the code...
+    } else {
+      console.error("Pet not found for the given user_id.");
+      res.status(404).json({
+        success: false,
+        error: "Pet not found for the given user_id.",
+      });
     }
-
-    const user_id = req.session.user.id;
-
-    const connection = await pool.getConnection();
-
-    const selectQuery =
-      "SELECT user_pets (user_id, pet_name, pet_type, image_data) where username = ?";
-    const [pets] = await connection.execute(selectQuery, [username]);
-
-    connection.release();
-
-    res.status(200).json({ message: "Pets retrieved successfully!" });
-    return pets;
   } catch (error) {
-    console.error("Error finding pets:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error updating hunger:", error.message);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });
-
 
 // User logout route
 app.post("/api/logout", (req, res) => {

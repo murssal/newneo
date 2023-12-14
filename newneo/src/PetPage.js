@@ -15,16 +15,62 @@ const PetPage = ({ user }) => {
   // Use useNavigate directly in the component
   const navigate = useNavigate();
 
-  // Define the updateHunger function
+  // // Define the updateHunger function
+  // const updateHunger = () => {
+  //   // Assuming stats.health is the hunger level
+  //   if (stats.health < 100) {
+  //     // Update hunger only if it's less than 100
+  //     const updatedHunger = Math.min(stats.health + 10, 100);
+  //     setStats((prevStats) => ({
+  //       ...prevStats,
+  //       health: updatedHunger,
+  //     }));
+  //   }
+  // };
+
+
+// Define the updateHunger function
   const updateHunger = () => {
     // Assuming stats.health is the hunger level
     if (stats.health < 100) {
       // Update hunger only if it's less than 100
       const updatedHunger = Math.min(stats.health + 10, 100);
-      setStats((prevStats) => ({
-        ...prevStats,
-        health: updatedHunger,
-      }));
+
+      // Update hunger in the database
+      fetch("http://localhost:5000/api/update-Hunger", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user?.id,
+          updated_hunger: updatedHunger,
+        }),
+        credentials: "include",
+      })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("API Response:", data);
+
+            if (data.success) {
+              // If the update is successful, update the state
+              setStats((prevStats) => ({
+                ...prevStats,
+                health: updatedHunger,
+              }));
+
+              // Check if updatedPet is defined and has at least one element
+              if (data.updatedPet && Array.isArray(data.updatedPet) && data.updatedPet.length > 0 && data.updatedPet[0].pet_id) {
+                const petId = data.updatedPet[0].pet_id;
+                console.log("pet id:", petId);
+              } else {
+                console.error("Updated pet information not available or missing pet_id.");
+              }
+            } else {
+              console.error("Failed to update hunger in the database.");
+            }
+          })
+          .catch((error) => console.error("Error updating hunger:", error));
     }
   };
 
