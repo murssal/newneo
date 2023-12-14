@@ -166,8 +166,26 @@ app.post('/api/user-pets', authenticateUser, async (req, res) => {
     const [result] = await connection.execute(insertQuery, [user_id, pet_name, pet_type, image_data]);
 
     connection.release();
+    try {
+      // Check if a pet with the same name already exists
+      const [existingPet] = await connection.execute('SELECT pet_id FROM user_pets WHERE pet_name = ?', [pet_name]);
 
-    res.status(200).json({ message: 'Pet added successfully!' });
+      if (existingPet.length > 0) {
+        // Pet with the same name already exists
+        return res.status(409).json({ error: 'Pet name already exists' });
+      }
+
+      // Insert the new pet
+      const insertQuery = 'INSERT INTO user_pets (user_id, pet_name, pet_type, image_data) VALUES (?, ?, ?, ?)';
+      await connection.execute(insertQuery, [user_id, pet_name, pet_type, image_data]);
+
+      res.status(200).json({ message: 'Pet added successfully!' });
+    } catch (error) {
+      console.error('Error adding pet:', error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+      connection.release();
+    }
   } catch (error) {
     console.error('Error adding pet:', error.message);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -259,22 +277,33 @@ async function getItemPrice(connection, itemId) {
         return res.status(404).json({ error: 'Item not found.' });
       }
 
-      // Check if the user has enough neopoints to buy the item
-      if (userNeopoints >= itemPrice) {
-        // Deduct the neopoints from the user
-        const remainingNeopoints = userNeopoints - itemPrice;
-        await connection.execute('UPDATE users SET neopoints = ? WHERE user_id = ?', [remainingNeopoints, user_id]);
+    // Check if the user has enough neopoints to buy the item
+if (userNeopoints >= itemPrice) {
+  // Check if the item already exists in the user's inventory
+  const [existingItem] = await connection.execute('SELECT * FROM user_pocket WHERE user_id = ? AND item_id = ?', [user_id, itemId]);
 
-        // Add the item to the user's pocket
-        await connection.execute('INSERT INTO user_pocket (user_id, item_id, quantity) VALUES (?, ?, 1)', [user_id, itemId]);
+  if (existingItem.length > 0) {
+      // Item already exists in the inventory
+      res.status(500).json({ error: 'Item already exists in the inventory.' });
+  } else {
+      // Deduct the neopoints from the user
+      const remainingNeopoints = userNeopoints - itemPrice;
+      await connection.execute('UPDATE users SET neopoints = ? WHERE user_id = ?', [remainingNeopoints, user_id]);
 
-        // Commit the transaction
-        await connection.commit();
+      // Add the item to the user's pocket
+      await connection.execute('INSERT INTO user_pocket (user_id, item_id, quantity) VALUES (?, ?, 1)', [user_id, itemId]);
 
-        res.status(200).json({ message: 'Item purchased successfully!' });
-      } else {
-        res.status(403).json({ error: 'Insufficient neopoints to buy the item.' });
-      }
+      // Commit the transaction
+      await connection.commit();
+
+      res.status(200).json({ message: 'Item purchased successfully!' });
+  }
+} else {
+  // Insufficient neopoints to buy the item
+  res.status(403).json({ error: 'Insufficient neopoints to buy the item.' });
+}
+
+
 
     } catch (error) {
       // If an error occurs, rollback the transaction

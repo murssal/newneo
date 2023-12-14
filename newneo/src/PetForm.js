@@ -67,17 +67,32 @@ const PetForm = ({ userId, onPetAdded }) => {
           onPetAdded();
         }
       } else {
-        console.error('Failed to add pet.');
-        setError('Failed to add pet, you must be logged in to create a pet!'); // Set error state
-        setSuccessMessage(null); // Clear success message on failure
+        const responseData = await response.json();
 
+        if (response.status === 401) {
+          // User not logged in
+          console.error('Failed to add pet. User not logged in.');
+          setError('Failed to add pet. You must be logged in to create a pet!');
+          setSuccessMessage(null); // Clear success message on failure
+        } else if (response.status === 409 && responseData.error === 'Pet name already exists') {
+          // Pet with the same name already exists
+          console.error('Failed to add pet. Pet with the same name already exists.');
+          setError('Failed to add pet. A pet with the same name already exists!');
+          setSuccessMessage(null); // Clear success message on failure
+        } else {
+          // Other errors
+          console.error('Failed to add pet.');
+          setError('Failed to add pet. An unexpected error occurred!');
+          setSuccessMessage(null); // Clear success message on failure
+        }
       }
     } catch (error) {
       console.error('An error occurred:', error.message);
-      setError('An error occurred, its us, not you!'); // Set error state
+      setError('An error occurred. It\'s us, not you!');
       setSuccessMessage(null); // Clear success message on failure
     }
   };
+
 
   return (
       <div>

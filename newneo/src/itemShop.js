@@ -3,6 +3,7 @@ import './ItemShop.css';
 
 const ItemShop = ({ user }) => {
     const [items, setItems] = useState([]);
+    const [purchaseStatus, setPurchaseStatus] = useState(null);
 
     useEffect(() => {
         console.log('User ID:', user?.id);
@@ -43,11 +44,31 @@ const ItemShop = ({ user }) => {
             }).catch(error => console.error('Fetch error:', error));
 
             if (!response.ok) {
+                const result = await response.json();
+             if (result.error === 'Insufficient neopoints to buy the item.') {
+                // Handle insufficient neopoints error
+                console.error('Insufficient neopoints to buy the item.');
+                setPurchaseStatus('Insufficient neopoints to buy the item.');
+            } else if (result.error === 'Item already exists in the inventory.') {
+                // Handle item already exists error
+                console.error('Item already exists in the inventory.');
+                setPurchaseStatus('Item already exists in the inventory.');
+            } else {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
+        }
             const result = await response.json();
             console.log(result.message);
+
+            
+
+        // Update purchase status state
+        setPurchaseStatus(result.message);
+
+        // Clear purchase status after a delay (adjust the timeout as needed)
+        setTimeout(() => {
+            setPurchaseStatus(null);
+        }, 3000); // Clear message after 3 seconds
         } catch (error) {
             console.error('Error buying item:', error.message);
         }
@@ -56,22 +77,30 @@ const ItemShop = ({ user }) => {
     return (
         <div className={"background"}>
             <h2>Item Shop</h2>
-            <div className="item-grid">
-            {items.map(item => {
-    console.log('Item Object:', item); // Log the entire item object
-    return (
-        <div key={item.id} className="item-card">
-            <h3>{item.item_name}</h3>
-            <img src={item.item_photo} alt={item.item_name} className="item-image" />
-            <p>Price: ${item.price}</p>
-            <button className="buy-button" onClick={() => handleBuyClick(item.item_id)}>
-                Buy
-            </button>
-        </div>
-    );
-})}
+{/* Display purchase status message */}
+{purchaseStatus && (
+                <div className="purchase-status">
+                    {purchaseStatus === 'Item purchased successfully!' ? (
+                        <span className="success-message">{purchaseStatus}</span>
+                    ) : (
+                        <span className="error-message">{purchaseStatus}</span>
+                    )}
+                </div>
+            )}
 
+            <div className="item-grid">
+            {items.map(item => (
+                <div key={item.id} className="item-card">
+                    <h3>{item.item_name}</h3>
+                    <img src={item.item_photo} alt={item.item_name} className="item-image" />
+                    <p>Price: ${item.price}</p>
+                    <button className="buy-button" onClick={() => handleBuyClick(item.item_id)}>
+                        Buy
+                    </button>
+                </div>
+            ))}
             </div>
+            
         </div>
     );
 };
