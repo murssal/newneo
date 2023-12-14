@@ -366,6 +366,56 @@ app.post("/api/buy-item", authenticateUser, async (req, res) => {
   }
 });
 
+app.get("/api/user-pets", authenticateUser, async (req, res) => {
+  try {
+    const user_id = req.session.user.id;
+
+    const connection = await pool.getConnection();
+
+    const selectQuery =
+      "SELECT pet_id, pet_name, pet_type, health, happiness, image_data FROM user_pets WHERE user_id = ?";
+    const [pets] = await connection.execute(selectQuery, [user_id]);
+
+    connection.release();
+
+    console.log("User Pets:", pets); // Log the pets to the console
+
+    res.status(200).json({ pets });
+  } catch (error) {
+    console.error("Error fetching user pets:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// get user-pets route
+app.get("/api/user-pets", authenticateUser, async (req, res) => {
+  try {
+    const { username } = req.body;
+
+    if (!pet_name || !pet_type) {
+      return res
+        .status(400)
+        .json({ error: "Pet name and pet type are required." });
+    }
+
+    const user_id = req.session.user.id;
+
+    const connection = await pool.getConnection();
+
+    const selectQuery =
+      "SELECT user_pets (user_id, pet_name, pet_type, image_data) where username = ?";
+    const [pets] = await connection.execute(selectQuery, [username]);
+
+    connection.release();
+
+    res.status(200).json({ message: "Pets retrieved successfully!" });
+    return pets;
+  } catch (error) {
+    console.error("Error finding pets:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // User logout route
 app.post("/api/logout", (req, res) => {
   // Destroy the session
