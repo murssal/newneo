@@ -1,3 +1,5 @@
+// Header.js
+
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import Link and useHistory from react-router-dom
 import { useUser } from './UserContext';

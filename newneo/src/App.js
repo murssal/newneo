@@ -9,6 +9,7 @@ import PetForm from './PetForm';
 import { UserProvider } from './UserContext';
 import ItemShop from './itemShop';
 import LogoutConfirmation from './LogoutConfirmation'
+import Shelter from './Shelter';
 
 const App = () => {
     const [user, setUser] = useState(null);
@@ -43,6 +44,7 @@ const App = () => {
                         <Route path="/pets" element={<PetForm onSubmit={handlePetSubmit} />} />
                         <Route path="/logout-confirmation" element={<LogoutConfirmation />} />
                         <Route path="/itemshop" element={<ItemShop user={user} />} />
+                        <Route path="/shelter" element={<Shelter />} />
                     </Routes>
                 </div>
             </Router>

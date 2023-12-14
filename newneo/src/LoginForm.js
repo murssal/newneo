@@ -46,7 +46,7 @@ const LoginForm = ({ onLogin }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className={"login-form"}>
             <img alt="login" class="formImg" src={"https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/login.gif?v=1702431752703"}>
             </img>
             {errorMessage && <div className="error-message">{errorMessage}</div>}
