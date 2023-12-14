@@ -8,6 +8,7 @@ import Home from './Home';
 import PetForm from './PetForm';
 import { UserProvider } from './UserContext';
 import ItemShop from './itemShop';
+import MiniGame from "./MiniGame";
 
 const App = () => {
     const handleRegisterSubmit = (formData) => {
@@ -39,6 +40,7 @@ const App = () => {
                         <Route path="/login" element={<LoginForm onLogin={handleLoginSubmit} />} />
                         <Route path="/pets" element={<PetForm onSubmit={handlePetSubmit} />} />
                         <Route path="/itemshop" element={<ItemShop />} />
+                        <Route path="/minigame" element={<MiniGame />} />
                     </Routes>
                 </div>
             </Router>
