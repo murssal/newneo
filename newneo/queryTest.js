@@ -206,6 +206,7 @@ app.post('/api/buy-item', authenticateUser, async (req, res) => {
    
 
     const { itemId } = req.body;
+    console.log('Item ID from request:', itemId);
     const user_id = req.session.user.id;
     console.log('print user id in queryTest for debugging', user_id);
 
@@ -229,6 +230,26 @@ app.post('/api/buy-item', authenticateUser, async (req, res) => {
       }
 
       const userNeopoints = userResult[0].neopoints;
+      // Example getItemPrice implementation
+async function getItemPrice(connection, itemId) {
+  try {
+      const [result] = await connection.execute('SELECT price FROM items WHERE item_id = ?', [itemId]);
+
+      if (!result || result.length === 0) {
+          // Item not found
+          console.error('Item not found for itemId:', itemId);
+          return null;
+      }
+
+      const itemPrice = result[0].price;
+      console.log('Item price retrieved for itemId:', itemId, '-', itemPrice);
+      return itemPrice;
+  } catch (error) {
+      console.error('Error getting item price:', error.message);
+      throw error; // You may choose to handle or propagate the error based on your needs
+  }
+}
+
 
       // Get the item price
       const itemPrice = await getItemPrice(connection, itemId);

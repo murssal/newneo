@@ -24,6 +24,7 @@ const ItemShop = ({ user }) => {
         try {
             // Check if the user ID is available before making a purchase
             console.log('User ID:', user?.id);
+            console.log('Item clicked:', itemId);
             if (!user?.id) {
                 console.error('User ID not available to make a purchase.');
                 return;
@@ -56,16 +57,20 @@ const ItemShop = ({ user }) => {
         <div className={"background"}>
             <h2>Item Shop</h2>
             <div className="item-grid">
-                {items.map(item => (
-                    <div key={item.id} className="item-card">
-                        <h3>{item.item_name}</h3>
-                        <img src={item.item_photo} alt={item.item_name} className="item-image" />
-                        <p>Price: ${item.price}</p>
-                        <button className="buy-button" onClick={() => handleBuyClick(item.id)}>
-                            Buy
-                        </button>
-                    </div>
-                ))}
+            {items.map(item => {
+    console.log('Item Object:', item); // Log the entire item object
+    return (
+        <div key={item.id} className="item-card">
+            <h3>{item.item_name}</h3>
+            <img src={item.item_photo} alt={item.item_name} className="item-image" />
+            <p>Price: ${item.price}</p>
+            <button className="buy-button" onClick={() => handleBuyClick(item.item_id)}>
+                Buy
+            </button>
+        </div>
+    );
+})}
+
             </div>
         </div>
     );
