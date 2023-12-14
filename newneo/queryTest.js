@@ -417,14 +417,14 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
 
 app.post("/api/update-Hunger", authenticateUser, async (req, res) => {
   try {
-    const { user_id, updated_hunger } = req.body;
+    const { pet_id, updated_hunger } = req.body;
 
-    console.log("Received user_id:", user_id);
+    console.log("Received user_id:", pet_id);
 
     // Update the health value for the pet
     const [result] = await pool.execute(
         "UPDATE user_pets SET health = ? WHERE pet_id = ?",
-        [updated_hunger, user_id]
+        [updated_hunger, pet_id]
     );
 
     console.log("Update result:", result);
@@ -433,7 +433,7 @@ app.post("/api/update-Hunger", authenticateUser, async (req, res) => {
       // Fetch the updated pet information including pet_id
       const [updatedPet] = await pool.execute(
           "SELECT pet_id, pet_name, pet_type, health, happiness, image_data FROM user_pets WHERE pet_id = ?",
-          [user_id]
+          [pet_id]
       );
 
       console.log("Fetched pet data:", updatedPet);
