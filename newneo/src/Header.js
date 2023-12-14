@@ -99,11 +99,8 @@ const Header = () => {
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/user-pets"
-                  onClick={() => handleItemClick("MiniGame")}
-                >
-                  my pet!
+                <Link to="/PetPage" onClick={() => handleItemClick("PetPage")}>
+                  my pets
                 </Link>
               </li>
               <li>
