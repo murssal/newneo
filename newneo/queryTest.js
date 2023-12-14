@@ -245,8 +245,7 @@ app.post("/api/playRockPaperScissors", authenticateUser, async (req, res) => {
       updatedNeopoints,
       user_id,
     ]);
-    result = "Congratulations! You win! You have been awarded 100 neopoints!";
-    // Add logic here to update the user's neopoints (e.g., add 100 neopoints)
+    result = "You have been awarded 100 neopoints!";
   } else {
     result = "Sorry, you lose. Try again!";
   }

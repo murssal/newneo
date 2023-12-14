@@ -34,10 +34,11 @@ const MiniGame = ({ user }) => {
 
   return (
     <div className="minigame-container">
-      <h2>Rock-Paper-Scissors Mini Game</h2>
+      <h2>Rock Paper Scissors Mini Game</h2>
       <div className="choices-container">
         <label>
           Your Choice:
+            <br />
           <select
             value={userChoice}
             onChange={(e) => setUserChoice(e.target.value)}
@@ -48,7 +49,7 @@ const MiniGame = ({ user }) => {
             <option value="scissors">Scissors</option>
           </select>
         </label>
-        <button onClick={handlePlayClick}>Play</button>
+        <button className={"playButton"} onClick={handlePlayClick}>Play</button>
       </div>
       {gameResult && (
         <div className="result-container">

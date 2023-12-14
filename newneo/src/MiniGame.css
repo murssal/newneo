@@ -1,6 +1,11 @@
 .minigame-container {
     font-family: Arial, sans-serif;
     text-align: center;
+    width: 600px;
+    background: #f5d578;
+    border-radius: 50px;
+    margin: 0 auto;
+    padding: 15px;
 }
 
 .choices-container {
@@ -8,16 +13,18 @@
 }
 
 label {
+    font-family: 'Heffaklump', sans-serif;
     display: block;
     margin-bottom: 10px;
 }
 
 select {
+    font-family: 'Heffaklump', sans-serif;
     padding: 5px;
-    font-size: 14px;
+    font-size: 20px;
 }
 
-button {
+.playButton {
     padding: 8px 15px;
     font-size: 14px;
     background-color: #4caf50;
@@ -30,4 +37,5 @@ button {
 .result-container {
     margin-top: 20px;
     font-weight: bold;
+    font-family: 'Heffaklump', sans-serif;
 }
