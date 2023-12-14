@@ -415,6 +415,7 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
   }
 });
 
+
 // User logout route
 app.post("/api/logout", (req, res) => {
   // Destroy the session
