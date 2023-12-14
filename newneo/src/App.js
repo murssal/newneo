@@ -12,6 +12,7 @@ import MiniGame from "./MiniGame";
 import LogoutConfirmation from "./LogoutConfirmation";
 import Shelter from "./Shelter";
 import PetPage from "./PetPage";
+import Account from "./Account";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -61,6 +62,7 @@ const App = () => {
             <Route path="/itemshop" element={<ItemShop user={user} />} />
             <Route path="/shelter" element={<Shelter user={user} />} />
             <Route path="/PetPage" element={<PetPage user={user} />} />
+            <Route path="/Account" element={<Account user={user} />} />
           </Routes>
         </div>
       </Router>

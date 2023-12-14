@@ -450,6 +450,76 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
   }
 });
 
+app.get("/api/account-user-info", authenticateUser, async (req, res) => {
+  try {
+    console.log("/api/account-user-info - Session:", req.session);
+    const userId = req.session.user.id;
+    const connection = await pool.getConnection();
+    console.log(userId);
+    // Fetch user information (username and neopoints) from the users table
+    const [userInfo] = await connection.execute(
+      "SELECT username, neopoints FROM users WHERE user_id = ?",
+      [userId]
+    );
+    console.log(userInfo);
+    if (!userInfo || userInfo.length === 0) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Send the user information as JSON response
+    res.json({
+      username: userInfo[0].username,
+      neopoints: userInfo[0].neopoints,
+    });
+  } catch (error) {
+    console.error("Error fetching user info:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get("/api/account-user-items", authenticateUser, async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const connection = await pool.getConnection();
+
+    // Fetch user items by joining user_pocket and items tables
+    const [userItems] = await connection.execute(
+      "SELECT items.item_name FROM user_pocket " +
+        "JOIN items ON user_pocket.item_id = items.item_id " +
+        "WHERE user_pocket.user_id = ?",
+      [userId]
+    );
+    console.log(userItems);
+    // Extract item names from the result
+    const itemNames = userItems.map((item) => item.item_name);
+
+    // Send the user items as JSON response
+    res.json({ items: itemNames });
+  } catch (error) {
+    console.error("Error fetching user items:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get("/api/account-user-pets", authenticateUser, async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const connection = await pool.getConnection();
+
+    // Fetch user pets from the user_pets table
+    const [userPets] = await connection.execute(
+      "SELECT pet_name, pet_type FROM user_pets WHERE user_id = ?",
+      [userId]
+    );
+
+    // Send the user pets as JSON response
+    res.json({ pets: userPets });
+  } catch (error) {
+    console.error("Error fetching user pets:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // User logout route
 app.post("/api/logout", (req, res) => {
   // Destroy the session

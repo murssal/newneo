@@ -123,3 +123,18 @@ button:hover {
 .homeIMG {
   width: 200px;
 }
+
+/* Account Page */
+.account-container {
+  flex-direction: column;
+  align-items: center;
+}
+
+.account-text-container {
+  text-align: left;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 50px;
+  border-radius: 50px;
+  background-color: #f5d578;
+}
