@@ -13,22 +13,22 @@ import LogoutConfirmation from './LogoutConfirmation'
 import Shelter from './Shelter';
 
 const App = () => {
-    const [user, setUser] = useState(null);
-    const handleRegisterSubmit = (formData) => {
-        console.log('Form Data:', formData);
-        // Add logic to send registration data to the server
-    };
+  const [user, setUser] = useState(null);
+  const handleRegisterSubmit = (formData) => {
+    console.log("Form Data:", formData);
+    // Add logic to send registration data to the server
+  };
 
-    const handleLoginSubmit = (user) => {
-        console.log('User logged in:', user);
-        // Add logic to handle user login in your app (e.g., update context)
-        setUser(user);
-    };
+  const handleLoginSubmit = (user) => {
+    console.log("User logged in:", user);
+    // Add logic to handle user login in your app (e.g., update context)
+    setUser(user);
+  };
 
-    const handlePetSubmit = (petName) => {
-        console.log('Pet entered:', petName);
-        // Add logic to handle user login in your app (e.g., update context)
-    };
+  const handlePetSubmit = (petName) => {
+    console.log("Pet entered:", petName);
+    // Add logic to handle user login in your app (e.g., update context)
+  };
 
     return (
         <UserProvider>
