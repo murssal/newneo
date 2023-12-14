@@ -13,11 +13,13 @@ body {
 
 /*default form (please specify classes for forms)*/
 form {
-  margin: 0 auto;
-  padding: 10%;
+  width: 500px;
+  max-width: 100%;
+  margin: auto;
+  padding: 50px;
   border-radius: 50px;
+  text-align: center;
   background-color: #f5d578;
-  min-width: auto;
 }
 
 label {
@@ -58,15 +60,15 @@ button:hover {
 
 /* for the register/login forms */
 .register-form {
-  max-width: auto;
-  margin: 5% 20%;
+  max-width: 500px;
+  margin: 0 auto;
   border-radius: 50px;
   overflow: auto;
 }
 
 .login-form {
-  max-width: auto;
-  margin: 5% 20%;
+  max-width: 500px;
+  margin: 0 auto;
   border-radius: 50px;
   overflow: auto;
 }
@@ -76,7 +78,7 @@ button:hover {
 }
 
 .signup-image {
-  max-width: auto;
+  max-width: 125px;
   margin-right: 20px;
   max-height:100%;
   width: 100px;
