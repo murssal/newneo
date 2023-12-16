@@ -6,8 +6,11 @@ header {
     background-image: url('https://portal.neopets.com/images/bg-images/top-banner-about-neopets.png');
     background-size: cover;
     background-attachment: fixed;
-    height: 100px;
+    background-repeat: no-repeat;
+    height: auto;
     margin-bottom: 50px;
+    width: auto;
+    overflow: auto;
 }
 
 .logo-container {
@@ -15,7 +18,7 @@ header {
 }
 
 .logo {
-    max-width: 100%;
+    max-width: auto;
     height: 100px;
     box-sizing: border-box;
 }

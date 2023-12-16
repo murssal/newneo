@@ -4,35 +4,21 @@
   src: url('./fonts/heffaklump/Heffaklump.ttf') format('truetype');
 }
 
-header {
-  background: linear-gradient(to top, #ff7e5f, #feb47b);
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  height: 100px;
-
-  /*Added font*/
-  font-size: 20px;
-  font-family: 'Heffaklump', sans-serif;
-  font-weight: 600; /* Numeric value for bold */
-  border-radius: 10px;
-}
-
 body {
   font-family: 'Heffaklump', sans-serif;
   font-weight: 600; /* Numeric value for bold */
   background-image: url('https://wallpapercave.com/wp/wp11139121.jpg');
 }
 
-/* login forms */
 
+/*default form (please specify classes for forms)*/
 form {
-  max-width: 500px;
-  margin: 0 auto;
+  width: 500px;
+  max-width: 100%;
+  margin: auto;
   padding: 50px;
   border-radius: 50px;
+  text-align: center;
   background-color: #f5d578;
 }
 
@@ -53,7 +39,7 @@ input {
 button {
   font-size: 16px;
   font-family: 'Heffaklump', sans-serif;
-  font-weight: 600; /* Numeric value for bold */
+  font-weight: 600;
   background-color: #e6b72c;
   color: black;
   padding: 10px 15px;
@@ -72,20 +58,19 @@ button:hover {
   margin-top: 10px;
 }
 
-.formImg {
-  width: 500px;
+/* for the register/login forms */
+.register-form {
+  max-width: 500px;
   margin: 0 auto;
-  display: block;
-  padding-bottom: 10px;
+  border-radius: 50px;
+  overflow: auto;
 }
 
-/* for the register forms */
-.register-form {
-  width: 500px;
-  max-width: 100%;
+.login-form {
+  max-width: 500px;
   margin: 0 auto;
-  padding: 50px;
   border-radius: 50px;
+  overflow: auto;
 }
 
 .form-container {
@@ -93,10 +78,19 @@ button:hover {
 }
 
 .signup-image {
-  max-width: 100px;
+  max-width: 125px;
   margin-right: 20px;
   max-height:100%;
+  width: 100px;
   align-self: center;
+}
+
+.formImg {
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  padding-bottom: 10px;
 }
 
 .form-fields {
@@ -128,4 +122,19 @@ button:hover {
 
 .homeIMG {
   width: 200px;
+}
+
+/* Account Page */
+.account-container {
+  flex-direction: column;
+  align-items: center;
+}
+
+.account-text-container {
+  text-align: left;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 50px;
+  border-radius: 50px;
+  background-color: #f5d578;
 }
