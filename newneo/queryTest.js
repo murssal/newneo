@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("path");
 const mysql = require("mysql2/promise");
 const dotenv = require("dotenv");
-const cors = require("cors"); // Import the cors middleware
+const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
@@ -12,15 +12,13 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-//app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
-// Enable CORS for all routes
-//app.use(cors());
 
 const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true,
 };
 
+//db connection
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -31,7 +29,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-// Middleware to check if the user is authenticated
+// middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
   const user = req.session.user;
 
@@ -39,7 +37,7 @@ const authenticateUser = (req, res, next) => {
     return res.status(401).json({ error: "User not authenticated." });
   }
 
-  next(); // Continue to the next middleware or route handler
+  next();
 };
 
 app.use(cors(corsOptions));
@@ -48,15 +46,15 @@ app.use(express.static(path.join(__dirname, "newneo")));
 
 app.use(express.json());
 
-// Use cookie-parser middleware
+// use cookie-parser middleware
 app.use(cookieParser());
 
-// Generate a random secret key
+// generate a random secret key
 const generateSecretKey = () => {
   return crypto.randomBytes(32).toString("hex");
 };
 
-const secretKey = generateSecretKey(); // Generate once
+const secretKey = generateSecretKey(); // generate only once
 app.use(
   session({
     secret: secretKey,
@@ -64,18 +62,18 @@ app.use(
     saveUninitialized: true,
     cookie: {
       secure: false, // Use 'true' in production with HTTPS
-      maxAge: 86400000, // Session duration in milliseconds (e.g., 1 day)
+      maxAge: 86400000, // session duration in milliseconds (1 day)
     },
   })
 );
 
-// Add debugging middleware
+// debugging, make sure user session is working
 app.use((req, res, next) => {
   console.log("Session data:", req.session);
   next();
 });
 
-//User Register
+//Register
 app.post("/api/users", async (req, res) => {
   try {
     const { username, password, email } = req.body;
@@ -106,7 +104,6 @@ app.post("/api/users", async (req, res) => {
 });
 
 // User login route
-
 app.post("/api/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -178,7 +175,7 @@ app.post("/api/user-pets", authenticateUser, async (req, res) => {
   }
 });
 
-// route to fetch items
+// route to fetch items for page display
 app.get("/api/items", authenticateUser, async (req, res) => {
   console.log("/api/items - Session:", req.session);
   try {
@@ -199,7 +196,7 @@ app.get("/api/items", authenticateUser, async (req, res) => {
   }
 });
 
-// Rock, Paper, Scissors route
+// Rock, Paper, Scissors game route
 app.post("/api/playRockPaperScissors", authenticateUser, async (req, res) => {
   console.log("/playRockPaperScissors - Session:", req.session);
   const connection = await pool.getConnection();
@@ -450,18 +447,19 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
   }
 });
 
+//account page user info - displays username and neopoints
 app.get("/api/account-user-info", authenticateUser, async (req, res) => {
   try {
-    console.log("/api/account-user-info - Session:", req.session);
+    console.log("/api/account-user-info - Session:", req.session); //printing in console for debugging
     const userId = req.session.user.id;
     const connection = await pool.getConnection();
-    console.log(userId);
+    console.log(userId); //printing in console for debugging
     // Fetch user information (username and neopoints) from the users table
     const [userInfo] = await connection.execute(
-      "SELECT username, neopoints FROM users WHERE user_id = ?",
+      "SELECT username, neopoints FROM users WHERE user_id = ?", //query database
       [userId]
     );
-    console.log(userInfo);
+    console.log(userInfo); //printing in console for debugging
     if (!userInfo || userInfo.length === 0) {
       return res.status(404).json({ error: "User not found." });
     }
@@ -477,6 +475,7 @@ app.get("/api/account-user-info", authenticateUser, async (req, res) => {
   }
 });
 
+//acount page - displays users items
 app.get("/api/account-user-items", authenticateUser, async (req, res) => {
   try {
     const userId = req.session.user.id;
@@ -501,6 +500,7 @@ app.get("/api/account-user-items", authenticateUser, async (req, res) => {
   }
 });
 
+//account page - displays users pets
 app.get("/api/account-user-pets", authenticateUser, async (req, res) => {
   try {
     const userId = req.session.user.id;

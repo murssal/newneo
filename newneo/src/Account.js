@@ -23,7 +23,7 @@ const Account = ({ user }) => {
       })
 
       .then((data) => {
-        console.log("Data:", data); // Log the actual data
+        console.log("Data:", data); // print in web console for debugging
         setUserInfo(data);
       })
       .catch((error) => {
@@ -42,7 +42,7 @@ const Account = ({ user }) => {
         }
         return response.json();
       })
-        .then((data) => setUserItems(data.items))
+      .then((data) => setUserItems(data.items))
       .catch((error) => {
         console.error("Error fetching user items:", error);
         setError("Failed to fetch user items");
@@ -78,11 +78,11 @@ const Account = ({ user }) => {
       </div>
       <div>
         <h3>Items:</h3>
-          <ul>
-              {userItems.map((itemName) => (
-                  <li key={itemName}>{itemName}</li>
-              ))}
-          </ul>
+        <ul>
+          {userItems.map((itemName) => (
+            <li key={itemName}>{itemName}</li>
+          ))}
+        </ul>
       </div>
       <div>
         <h3>Pets:</h3>
