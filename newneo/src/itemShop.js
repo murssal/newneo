@@ -36,6 +36,7 @@ const ItemShop = ({ user }) => {
       }
       // fetch data + parse response
       const response = await fetch("http://34.215.164.92:5000/api/buy-item", {
+        mode: "no-cors",
         method: "POST",
         headers: {
           "Content-Type": "application/json",

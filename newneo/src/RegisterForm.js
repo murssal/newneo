@@ -22,6 +22,7 @@ const RegisterForm = () => {
 
       const response = await fetch("http://34.215.164.92:5000/api/users", {
         method: "POST",
+        mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
         },

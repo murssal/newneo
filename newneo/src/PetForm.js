@@ -66,6 +66,7 @@ const PetForm = ({ userId, onPetAdded }) => {
       // backend call, retrieves data and parses for web display
       const response = await fetch("http://34.215.164.92:5000/api/user-pets", {
         method: "POST",
+        mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
         },

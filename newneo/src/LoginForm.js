@@ -17,6 +17,7 @@ const LoginForm = ({ onLogin }) => {
       // routes to backend
       const response = await fetch("http://34.215.164.92:5000/api/login", {
         method: "POST",
+        mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
         },

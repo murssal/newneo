@@ -17,6 +17,7 @@ const MiniGame = ({ user }) => {
         "http://34.215.164.92:5000/api/playRockPaperScissors",
         {
           method: "POST",
+          mode: "no-cors",
           headers: {
             "Content-Type": "application/json",
           },

@@ -180,6 +180,7 @@ const Shelter = ({ userId, onPetAdded }) => {
     try {
       fetch("http://34.215.164.92:5000/api/user-pets", {
         method: "POST",
+        mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
         },
