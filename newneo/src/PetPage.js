@@ -31,7 +31,7 @@ const PetPage = ({ user }) => {
     setPets(updatedPets);
 
     // make a request to update the server-side for the specific pet
-    fetch("http://localhost:5000/api/update-pet-hunger", {
+    fetch("http://34.215.164.92:5000/api/update-pet-hunger", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const PetPage = ({ user }) => {
   // backend call to retrieve the users' pets
   //retrives response and parses for webpage display
   useEffect(() => {
-    fetch("http://localhost:5000/api/user-pets", { credentials: "include" })
+    fetch("http://34.215.164.92:5000/api/user-pets", { credentials: "include" })
       .then((response) => response.json())
       .then((data) => {
         setPets(data.pets);

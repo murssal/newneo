@@ -14,7 +14,7 @@ const MiniGame = ({ user }) => {
     try {
       // call backend + return parsed response
       const response = await fetch(
-        "http://localhost:5000/api/playRockPaperScissors",
+        "http://34.215.164.92:5000/api/playRockPaperScissors",
         {
           method: "POST",
           headers: {

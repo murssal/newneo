@@ -14,7 +14,7 @@ const Account = ({ user }) => {
     //log on console for debugging
     console.log("User ID:", user?.id);
     // fetch user information (username and neopoints) + parse response
-    fetch("http://localhost:5000/api/account-user-info", {
+    fetch("http://34.215.164.92:5000/api/account-user-info", {
       credentials: "include",
     })
       .then((response) => {
@@ -36,7 +36,7 @@ const Account = ({ user }) => {
       });
 
     // fetch user items
-    fetch("http://localhost:5000/api/account-user-items", {
+    fetch("http://34.215.164.92:5000/api/account-user-items", {
       credentials: "include",
     })
       .then((response) => {
@@ -53,7 +53,7 @@ const Account = ({ user }) => {
       });
 
     // fetch user pets
-    fetch("http://localhost:5000/api/account-user-pets", {
+    fetch("http://34.215.164.92:5000/api/account-user-pets", {
       credentials: "include",
     })
       .then((response) => {

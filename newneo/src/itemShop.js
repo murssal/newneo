@@ -11,7 +11,7 @@ const ItemShop = ({ user }) => {
   useEffect(() => {
     console.log("User ID:", user?.id);
     // fetch items + parse results
-    fetch("http://localhost:5000/api/items", {
+    fetch("http://34.215.164.92:5000/api/items", {
       credentials: "include",
     })
       .then((response) => {
@@ -34,7 +34,7 @@ const ItemShop = ({ user }) => {
         return;
       }
       // fetch data + parse response
-      const response = await fetch("http://localhost:5000/api/buy-item", {
+      const response = await fetch("http://34.215.164.92:5000/api/buy-item", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

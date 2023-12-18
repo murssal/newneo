@@ -64,7 +64,7 @@ const PetForm = ({ userId, onPetAdded }) => {
     try {
       const selectedPet = petOptions.find((pet) => pet.value === petType);
       // backend call, retrieves data and parses for web display
-      const response = await fetch("http://localhost:5000/api/user-pets", {
+      const response = await fetch("http://34.215.164.92:5000/api/user-pets", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

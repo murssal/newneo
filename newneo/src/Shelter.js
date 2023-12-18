@@ -178,7 +178,7 @@ const Shelter = ({ userId, onPetAdded }) => {
 
     // backend call to insert pet into database + parse data
     try {
-      fetch("http://localhost:5000/api/user-pets", {
+      fetch("http://34.215.164.92:5000/api/user-pets", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
