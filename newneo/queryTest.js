@@ -32,9 +32,27 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: '*', // Allow requests from any origin
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
+  optionsSuccessStatus: 204,
 };
+
+const allowedOrigins = ['http://34.215.164.92:3000', 'http://34.215.164.92:5000', 'http://localhost:3000'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Check if the origin is allowed, or if it's a same-origin request
+    if (!origin ||  allowedOrigins.includes(origin) ||  origin === 'http://localhost:3000') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
+}));
 
 // db connection
 const pool = mysql.createPool({

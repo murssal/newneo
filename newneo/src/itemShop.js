@@ -12,6 +12,7 @@ const ItemShop = ({ user }) => {
     console.log("User ID:", user?.id);
     // fetch items + parse results
     fetch("http://34.215.164.92:5000/api/items", {
+      mode: "no-cors",
       credentials: "include",
     })
       .then((response) => {

@@ -18,6 +18,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       const response = await fetch("http://34.215.164.92:5000/api/logout", {
+        mode: "no-cors",
         method: "POST",
         credentials: "include",
       });

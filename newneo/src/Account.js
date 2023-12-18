@@ -15,6 +15,7 @@ const Account = ({ user }) => {
     console.log("User ID:", user?.id);
     // fetch user information (username and neopoints) + parse response
     fetch("http://34.215.164.92:5000/api/account-user-info", {
+      mode: "no-cors",
       credentials: "include",
     })
       .then((response) => {
@@ -37,6 +38,7 @@ const Account = ({ user }) => {
 
     // fetch user items
     fetch("http://34.215.164.92:5000/api/account-user-items", {
+      mode: "no-cors",
       credentials: "include",
     })
       .then((response) => {
@@ -54,6 +56,7 @@ const Account = ({ user }) => {
 
     // fetch user pets
     fetch("http://34.215.164.92:5000/api/account-user-pets", {
+      mode: "no-cors",
       credentials: "include",
     })
       .then((response) => {
