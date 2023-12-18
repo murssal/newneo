@@ -50,7 +50,7 @@ const LoginForm = ({ onLogin }) => {
     <form onSubmit={handleSubmit}>
       <img
         alt="login"
-        class="formImg"
+        className="formImg"
         src={
           "https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/login.gif?v=1702431752703"
         }
