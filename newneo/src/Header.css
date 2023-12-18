@@ -1,60 +1,61 @@
+/* Header CSS */
 header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-image: url('https://portal.neopets.com/images/bg-images/top-banner-about-neopets.png');
-    background-size: cover;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    height: auto;
-    margin-bottom: 50px;
-    width: auto;
-    overflow: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-image: url("https://portal.neopets.com/images/bg-images/top-banner-about-neopets.png");
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  height: auto;
+  margin-bottom: 50px;
+  width: auto;
+  overflow: auto;
 }
 
 .logo-container {
-    flex: 1;
+  flex: 1;
 }
 
 .logo {
-    max-width: auto;
-    height: 100px;
-    box-sizing: border-box;
+  max-width: auto;
+  height: 100px;
+  box-sizing: border-box;
 }
 
 nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
 }
 
 nav ul li {
-    margin-right: 10px;
-    position: relative;
+  margin-right: 10px;
+  position: relative;
 }
 
 nav ul li::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
 }
 
 nav ul li a {
-    display: inline-block;
-    padding: 10px 15px;
-    text-decoration: none;
-    color: black;
-    background-color: #f5d578;
-    border-radius: 50px;
-    transition: background-color 0.3s ease;
+  display: inline-block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: black;
+  background-color: #f5d578;
+  border-radius: 50px;
+  transition: background-color 0.3s ease;
 }
 
 nav ul li a:hover {
-    color: #bf5e19;
+  color: #bf5e19;
 }

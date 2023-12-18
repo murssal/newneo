@@ -1,11 +1,29 @@
-//Backend Node
+// Backend Node
+// interacts with the database and provides endpoints
+// for the front end to interact with and retrieve data through
+
+// import the Express framework for building the web server
 const express = require("express");
+
+// module for handling file paths
 const path = require("path");
+
+// MySQL library for interacting with the database
 const mysql = require("mysql2/promise");
+
+// load environment variables from a .env file
 const dotenv = require("dotenv");
+
+// middleware for handling Cross-Origin Resource Sharing (CORS)
 const cors = require("cors");
+
+// middleware for handling sessions in Express
 const session = require("express-session");
+
+// middleware for parsing cookies in Express
 const cookieParser = require("cookie-parser");
+
+// crypto module for user key generator for login session
 const crypto = require("crypto");
 
 dotenv.config();
@@ -18,7 +36,7 @@ const corsOptions = {
   credentials: true,
 };
 
-//db connection
+// db connection
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -61,7 +79,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: false, // Use 'true' in production with HTTPS
+      secure: false, // 'true' in production with HTTPS
       maxAge: 86400000, // session duration in milliseconds (1 day)
     },
   })
@@ -73,7 +91,7 @@ app.use((req, res, next) => {
   next();
 });
 
-//Register
+// registeration route
 app.post("/api/users", async (req, res) => {
   try {
     const { username, password, email } = req.body;
@@ -86,6 +104,7 @@ app.post("/api/users", async (req, res) => {
 
     const connection = await pool.getConnection();
 
+    // query to insert user registration into db
     const insertQuery =
       "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
     const [result] = await connection.execute(insertQuery, [
@@ -99,11 +118,11 @@ app.post("/api/users", async (req, res) => {
     res.status(200).json({ message: "User added successfully!" });
   } catch (error) {
     console.error("Error adding user:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" }); // db error
   }
 });
 
-// User login route
+// user login route
 app.post("/api/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -116,12 +135,13 @@ app.post("/api/login", async (req, res) => {
 
     const connection = await pool.getConnection();
 
+    // query to check username and password
     const selectQuery =
       "SELECT * FROM users WHERE username = ? AND password = ?";
     const [users] = await connection.execute(selectQuery, [username, password]);
 
     if (users.length === 1) {
-      // Store user information in the session
+      // store user information in the session
       req.session.user = {
         id: users[0].user_id,
         username: users[0].username,
@@ -138,11 +158,11 @@ app.post("/api/login", async (req, res) => {
     connection.release();
   } catch (error) {
     console.error("Error during login:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" }); // db error
   }
 });
 
-// New user-pets insert route
+// user-pets insertion route
 app.post("/api/user-pets", authenticateUser, async (req, res) => {
   try {
     const { pet_name, pet_type, image_data } = req.body;
@@ -153,10 +173,11 @@ app.post("/api/user-pets", authenticateUser, async (req, res) => {
         .json({ error: "Pet name and pet type are required." });
     }
 
-    const user_id = req.session.user.id;
+    const user_id = req.session.user.id; // log the user logged in in the session
 
     const connection = await pool.getConnection();
 
+    // query to add pet to db for user
     const insertQuery =
       "INSERT INTO user_pets (user_id, pet_name, pet_type, image_data) VALUES (?, ?, ?, ?)";
     const [result] = await connection.execute(insertQuery, [
@@ -171,7 +192,7 @@ app.post("/api/user-pets", authenticateUser, async (req, res) => {
     res.status(200).json({ message: "Pet added successfully!" });
   } catch (error) {
     console.error("Error adding pet:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" }); // db error
   }
 });
 
@@ -183,6 +204,7 @@ app.get("/api/items", authenticateUser, async (req, res) => {
 
     const connection = await pool.getConnection();
 
+    // db query, fetches items from database
     const selectQuery =
       "SELECT item_id, item_name, item_photo, price FROM items";
     const [items] = await connection.execute(selectQuery);
@@ -192,11 +214,11 @@ app.get("/api/items", authenticateUser, async (req, res) => {
     res.status(200).json(items);
   } catch (error) {
     console.error("Error fetching items:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" }); // error if can't connect to db
   }
 });
 
-// Rock, Paper, Scissors game route
+// rock, paper, scissors game route
 app.post("/api/playRockPaperScissors", authenticateUser, async (req, res) => {
   console.log("/playRockPaperScissors - Session:", req.session);
   const connection = await pool.getConnection();
@@ -207,12 +229,12 @@ app.post("/api/playRockPaperScissors", authenticateUser, async (req, res) => {
     return res.status(400).json({ error: "Invalid user choice." });
   }
 
-  // Generate a random choice for the computer
+  // generate a random choice for the computer
   const computerChoices = ["rock", "paper", "scissors"];
   const computerChoice =
     computerChoices[Math.floor(Math.random() * computerChoices.length)];
 
-  // Determine the winner
+  // determine the winner
   let result;
   if (userChoice === computerChoice) {
     result = "It's a tie! Try again!";
@@ -221,7 +243,7 @@ app.post("/api/playRockPaperScissors", authenticateUser, async (req, res) => {
     (userChoice === "paper" && computerChoice === "rock") ||
     (userChoice === "scissors" && computerChoice === "paper")
   ) {
-    // Check the user's neopoints
+    // check the user's neopoints
     const [userResult] = await connection.execute(
       "SELECT neopoints FROM users WHERE user_id = ?",
       [user_id]
@@ -232,24 +254,27 @@ app.post("/api/playRockPaperScissors", authenticateUser, async (req, res) => {
     );
 
     if (!userResult || userResult.length === 0) {
-      // User not found
+      // user not found
       return res.status(404).json({ error: "User not found." });
     }
 
     const userNeopoints = userResult[0].neopoints;
     const updatedNeopoints = userNeopoints + 100;
+    // if win, add 100 to neopoints field for user
     await pool.execute("UPDATE users SET neopoints = ? WHERE user_id = ?", [
       updatedNeopoints,
       user_id,
     ]);
     result = "You have been awarded 100 neopoints!";
   } else {
+    // lose message, no effect to neopoints
     result = "Sorry, you lose. Try again!";
   }
 
   res.json({ result, computerChoice, win: result.includes("win") });
 });
 
+// buy item route
 app.post("/api/buy-item", authenticateUser, async (req, res) => {
   console.log("/api/buy-item - Session:", req.session);
 
@@ -268,10 +293,10 @@ app.post("/api/buy-item", authenticateUser, async (req, res) => {
     const connection = await pool.getConnection();
 
     try {
-      // Start a transaction
+      // start a transaction
       await connection.beginTransaction();
       console.log("transaction started...waiting on query...");
-      // Check the user's neopoints
+      // check the user's neopoints
       const [userResult] = await connection.execute(
         "SELECT neopoints FROM users WHERE user_id = ?",
         [user_id]
@@ -282,12 +307,12 @@ app.post("/api/buy-item", authenticateUser, async (req, res) => {
       );
 
       if (!userResult || userResult.length === 0) {
-        // User not found
+        // user not found
         return res.status(404).json({ error: "User not found." });
       }
 
       const userNeopoints = userResult[0].neopoints;
-      // Example getItemPrice implementation
+      // retrieves item price
       async function getItemPrice(connection, itemId) {
         try {
           const [result] = await connection.execute(
@@ -296,7 +321,7 @@ app.post("/api/buy-item", authenticateUser, async (req, res) => {
           );
 
           if (!result || result.length === 0) {
-            // Item not found
+            // item not found
             console.error("Item not found for itemId:", itemId);
             return null;
           }
@@ -311,34 +336,34 @@ app.post("/api/buy-item", authenticateUser, async (req, res) => {
           return itemPrice;
         } catch (error) {
           console.error("Error getting item price:", error.message);
-          throw error; // You may choose to handle or propagate the error based on your needs
+          throw error;
         }
       }
 
-      // Get the item price
+      // get the item price
       const itemPrice = await getItemPrice(connection, itemId);
 
       if (itemPrice === null) {
-        // Item not found
+        // item not found
         return res.status(404).json({ error: "Item not found." });
       }
 
-      // Check if the user has enough neopoints to buy the item
+      // check if the user has enough neopoints to buy the item
       if (userNeopoints >= itemPrice) {
-        // Deduct the neopoints from the user
+        // deduct the neopoints from the user
         const remainingNeopoints = userNeopoints - itemPrice;
         await connection.execute(
           "UPDATE users SET neopoints = ? WHERE user_id = ?",
           [remainingNeopoints, user_id]
         );
 
-        // Add the item to the user's pocket
+        // add the item to the user's pocket
         await connection.execute(
           "INSERT INTO user_pocket (user_id, item_id, quantity) VALUES (?, ?, 1)",
           [user_id, itemId]
         );
 
-        // Commit the transaction
+        // commit the transaction
         await connection.commit();
 
         res.status(200).json({ message: "Item purchased successfully!" });
@@ -348,12 +373,12 @@ app.post("/api/buy-item", authenticateUser, async (req, res) => {
           .json({ error: "Insufficient neopoints to buy the item." });
       }
     } catch (error) {
-      // If an error occurs, rollback the transaction
+      // if an error occurs, rollback the transaction
       await connection.rollback();
       console.error("Error buying item:", error.message);
       res.status(500).json({ error: "Internal Server Error" });
     } finally {
-      // Always release the connection back to the pool, whether there was an error or not
+      // always release the connection back to the pool, whether there was an error or not
       connection.release();
     }
   } catch (error) {
@@ -362,6 +387,7 @@ app.post("/api/buy-item", authenticateUser, async (req, res) => {
   }
 });
 
+// user-pets route
 app.get("/api/user-pets", authenticateUser, async (req, res) => {
   try {
     const user_id = req.session.user.id;
@@ -374,7 +400,7 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
 
     connection.release();
 
-    console.log("User Pets:", pets); // Log the pets to the console
+    console.log("User Pets:", pets); // log the pets to the console
 
     res.status(200).json({ pets });
   } catch (error) {
@@ -383,15 +409,15 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
   }
 });
 
-// New route for updating pet hunger
+// new route for updating pet hunger
 app.post("/api/update-pet-hunger", authenticateUser, async (req, res) => {
   try {
     const user_id = req.session.user.id;
-    const petId = req.body.petId; // Extract petId from the request body
+    const petId = req.body.petId; // extract petId from the request body
 
     const connection = await pool.getConnection();
 
-    // Fetch current health for the specific pet from the database
+    // fetch current health for the specific pet from the database
     const [pet] = await connection.execute(
       "SELECT health FROM user_pets WHERE user_id = ? AND pet_id = ?",
       [user_id, petId]
@@ -404,11 +430,11 @@ app.post("/api/update-pet-hunger", authenticateUser, async (req, res) => {
     const currentHealth = pet[0].health;
     console.log(currentHealth);
 
-    // Calculate the new health (assuming it's being increased by 10)
+    // calculate the new health (assuming it's being increased by 10)
     const newHealth = Math.min(currentHealth + 10, 100);
     console.log(newHealth);
 
-    // Update health only if the new health is 10 higher than the current value
+    // update health only if the new health is 10 higher than the current value
     if (newHealth > currentHealth) {
       await connection.execute(
         "UPDATE user_pets SET health = ? WHERE user_id = ? AND pet_id = ?",
@@ -447,24 +473,24 @@ app.get("/api/user-pets", authenticateUser, async (req, res) => {
   }
 });
 
-//account page user info - displays username and neopoints
+// account page route user info - displays username and neopoints
 app.get("/api/account-user-info", authenticateUser, async (req, res) => {
   try {
-    console.log("/api/account-user-info - Session:", req.session); //printing in console for debugging
+    console.log("/api/account-user-info - Session:", req.session); // printing in console for debugging
     const userId = req.session.user.id;
     const connection = await pool.getConnection();
-    console.log(userId); //printing in console for debugging
-    // Fetch user information (username and neopoints) from the users table
+    console.log(userId); // printing in console for debugging
+    // fetch user information (username and neopoints) from the users table
     const [userInfo] = await connection.execute(
-      "SELECT username, neopoints FROM users WHERE user_id = ?", //query database
+      "SELECT username, neopoints FROM users WHERE user_id = ?", // query database
       [userId]
     );
-    console.log(userInfo); //printing in console for debugging
+    console.log(userInfo); // printing in console for debugging
     if (!userInfo || userInfo.length === 0) {
       return res.status(404).json({ error: "User not found." });
     }
 
-    // Send the user information as JSON response
+    // send the user information as JSON response
     res.json({
       username: userInfo[0].username,
       neopoints: userInfo[0].neopoints,
@@ -475,13 +501,13 @@ app.get("/api/account-user-info", authenticateUser, async (req, res) => {
   }
 });
 
-//acount page - displays users items
+// acount page route - displays users items
 app.get("/api/account-user-items", authenticateUser, async (req, res) => {
   try {
     const userId = req.session.user.id;
     const connection = await pool.getConnection();
 
-    // Fetch user items by joining user_pocket and items tables
+    // fetch user items by joining user_pocket and items tables
     const [userItems] = await connection.execute(
       "SELECT items.item_name FROM user_pocket " +
         "JOIN items ON user_pocket.item_id = items.item_id " +
@@ -489,10 +515,10 @@ app.get("/api/account-user-items", authenticateUser, async (req, res) => {
       [userId]
     );
     console.log(userItems);
-    // Extract item names from the result
+    // extract item names from the result
     const itemNames = userItems.map((item) => item.item_name);
 
-    // Send the user items as JSON response
+    // send the user items as JSON response
     res.json({ items: itemNames });
   } catch (error) {
     console.error("Error fetching user items:", error.message);
@@ -500,19 +526,19 @@ app.get("/api/account-user-items", authenticateUser, async (req, res) => {
   }
 });
 
-//account page - displays users pets
+//account page route - displays users pets
 app.get("/api/account-user-pets", authenticateUser, async (req, res) => {
   try {
     const userId = req.session.user.id;
     const connection = await pool.getConnection();
 
-    // Fetch user pets from the user_pets table
+    // fetch user pets from the user_pets table
     const [userPets] = await connection.execute(
       "SELECT pet_name, pet_type FROM user_pets WHERE user_id = ?",
       [userId]
     );
 
-    // Send the user pets as JSON response
+    // send the user pets as JSON response
     res.json({ pets: userPets });
   } catch (error) {
     console.error("Error fetching user pets:", error.message);
@@ -520,9 +546,9 @@ app.get("/api/account-user-pets", authenticateUser, async (req, res) => {
   }
 });
 
-// User logout route
+// user logout route
 app.post("/api/logout", (req, res) => {
-  // Destroy the session
+  // destroy the session
   req.session.destroy((err) => {
     if (err) {
       console.error("Error during logout:", err.message);
@@ -533,7 +559,7 @@ app.post("/api/logout", (req, res) => {
   });
 });
 
-// Serve the default public/index.html created by Create React App
+// serve the default public/index.html created by Create React App
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });

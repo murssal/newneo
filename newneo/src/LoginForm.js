@@ -1,7 +1,10 @@
 // LoginForm.js
+// front end to back end for user log in
 import React, { useState } from "react";
 import "./index.css";
+
 const LoginForm = ({ onLogin }) => {
+  //react states
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -11,24 +14,24 @@ const LoginForm = ({ onLogin }) => {
     e.preventDefault();
 
     try {
-      // Update the endpoint URL based on your backend route
+      // routes to backend
       const response = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
-        credentials: "include", // Important for sending cookies
+        credentials: "include", // important for sending cookies (keep user logged in across pages)
       });
 
       const data = await response.json();
-
+      // success and error messages
       if (response.ok) {
         console.log("Login successful:", data);
         setSuccessMessage("Login successful!");
         setErrorMessage("");
 
-        // Call the callback prop if provided
+        // call the callback user prop
         if (onLogin) {
           onLogin(data.user);
         }
@@ -46,6 +49,7 @@ const LoginForm = ({ onLogin }) => {
     }
   };
 
+  // print results to webpage
   return (
     <form onSubmit={handleSubmit}>
       <img

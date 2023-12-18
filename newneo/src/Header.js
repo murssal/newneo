@@ -1,29 +1,30 @@
 // Header.js
+// header for pages, links to other pages
 
 import React from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import Link and useHistory from react-router-dom
+import { Link, useNavigate } from "react-router-dom"; // import Link and useHistory from react-router-dom
 import { useUser } from "./UserContext";
-import "./Header.css"; // Import the CSS file
+import "./Header.css"; // import the CSS file
 
 const Header = () => {
   const { isLoggedIn, logout } = useUser();
-  const navigate = useNavigate(); // Access the history object
+  const navigate = useNavigate(); // access the history object
 
   const handleItemClick = (item) => {
-    // Handle the click event for each menu item
+    // handle the click event for each menu item
     console.log(`Clicked on ${item}`);
   };
-
+  // fetch data and parse results
   const handleLogout = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/logout", {
         method: "POST",
         credentials: "include",
       });
-
+      // success and error messages
       if (response.ok) {
         console.log("Logout successful");
-        // Redirect to the logout confirmation page
+        // redirect to the logout confirmation page
         navigate("/logout-confirmation");
       } else {
         console.error("Logout failed:", response.statusText);
@@ -32,7 +33,8 @@ const Header = () => {
       console.error("Error during logout:", error.message);
     }
   };
-
+  // display results to webpage
+  // links to other pages around the site
   return (
     <header>
       <div className="logo-container">

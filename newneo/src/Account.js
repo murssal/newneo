@@ -1,15 +1,19 @@
+// Account.js
+// displays user account - neopoints, username, pets, and items
 import React, { useState, useEffect } from "react";
 import "./index.css";
 
 const Account = ({ user }) => {
+  //react states
   const [userInfo, setUserInfo] = useState({});
   const [userItems, setUserItems] = useState([]);
   const [userPets, setUserPets] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    //log on console for debugging
     console.log("User ID:", user?.id);
-    // Fetch user information (username and neopoints)
+    // fetch user information (username and neopoints) + parse response
     fetch("http://localhost:5000/api/account-user-info", {
       credentials: "include",
     })
@@ -31,7 +35,7 @@ const Account = ({ user }) => {
         setError("Failed to fetch user info");
       });
 
-    // Fetch user items
+    // fetch user items
     fetch("http://localhost:5000/api/account-user-items", {
       credentials: "include",
     })
@@ -48,7 +52,7 @@ const Account = ({ user }) => {
         setError("Failed to fetch user items");
       });
 
-    // Fetch user pets
+    // fetch user pets
     fetch("http://localhost:5000/api/account-user-pets", {
       credentials: "include",
     })
@@ -64,9 +68,10 @@ const Account = ({ user }) => {
         console.error("Error fetching user pets:", error);
         setError("Failed to fetch user pets");
       });
-  }, []); // Empty dependency array to run the effect only once on mount
+  }, []);
 
   return (
+    // print user account results
     <div className="account-text-container">
       <h2>Account Information</h2>
       {error && <div className="error-message">{error}</div>}

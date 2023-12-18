@@ -1,11 +1,14 @@
+// PetForm.js
+// Create a Pet webpage
 import React, { useState, useEffect } from "react";
 import "./PetForm.css";
 
 const PetForm = ({ userId, onPetAdded }) => {
+  // react states
   const [petType, setPetType] = useState("");
   const [petName, setPetName] = useState("");
   const [imageData, setImageData] = useState("");
-  const [error, setError] = useState(null); // New error state
+  const [error, setError] = useState(null); // error state
   const [successMessage, setSuccessMessage] = useState(null); //success message
 
   useEffect(() => {
@@ -31,7 +34,7 @@ const PetForm = ({ userId, onPetAdded }) => {
       setError("Error loading image data"); // Set error state
     }
   };
-
+  // pet options
   const petOptions = [
     {
       value: "Aisha",
@@ -54,13 +57,13 @@ const PetForm = ({ userId, onPetAdded }) => {
         "https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/kougra.gif?v=1702452833954",
     },
   ];
-
+  // pet select option, interacts with backend
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       const selectedPet = petOptions.find((pet) => pet.value === petType);
-
+      // backend call, retrieves data and parses for web display
       const response = await fetch("http://localhost:5000/api/user-pets", {
         method: "POST",
         headers: {
@@ -74,7 +77,7 @@ const PetForm = ({ userId, onPetAdded }) => {
         }),
         credentials: "include",
       });
-
+      //error and success messages
       if (response.ok) {
         console.log("Pet added successfully!");
         setError(null); // Clear error state on success
@@ -115,7 +118,7 @@ const PetForm = ({ userId, onPetAdded }) => {
       setSuccessMessage(null); // Clear success message on failure
     }
   };
-
+  //pets displayed on webpage
   return (
     <div>
       <form className="petform-container" onSubmit={handleSubmit}>

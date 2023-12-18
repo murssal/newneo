@@ -1,12 +1,18 @@
+// MiniGame.js
+// front end to back end connection for mini game (rock,paper, scissors)
 import React, { useState } from "react";
 import "./MiniGame.css";
+
+// mini game, passes in user credentials for logging in database
 const MiniGame = ({ user }) => {
+  // react states
   const [userChoice, setUserChoice] = useState("");
   const [gameResult, setGameResult] = useState(null);
 
   const handlePlayClick = async () => {
     console.log("User ID:", user?.id);
     try {
+      // call backend + return parsed response
       const response = await fetch(
         "http://localhost:5000/api/playRockPaperScissors",
         {
@@ -20,7 +26,7 @@ const MiniGame = ({ user }) => {
           credentials: "include",
         }
       );
-
+      // success and error messages
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -31,14 +37,14 @@ const MiniGame = ({ user }) => {
       console.error("Error playing Rock-Paper-Scissors:", error.message);
     }
   };
-
+  // display results on webpage
   return (
     <div className="minigame-container">
       <h2>Rock Paper Scissors Mini Game</h2>
       <div className="choices-container">
         <label>
           Your Choice:
-            <br />
+          <br />
           <select
             value={userChoice}
             onChange={(e) => setUserChoice(e.target.value)}
@@ -49,7 +55,9 @@ const MiniGame = ({ user }) => {
             <option value="scissors">Scissors</option>
           </select>
         </label>
-        <button className={"playButton"} onClick={handlePlayClick}>Play</button>
+        <button className={"playButton"} onClick={handlePlayClick}>
+          Play
+        </button>
       </div>
       {gameResult && (
         <div className="result-container">

@@ -15,30 +15,29 @@ import PetPage from "./PetPage";
 import Account from "./Account";
 
 const App = () => {
+  // user react state
   const [user, setUser] = useState(null);
+  // regsitration logging
   const handleRegisterSubmit = (formData) => {
-    console.log("Form Data:", formData);
-    // Add logic to send registration data to the server
+    console.log("Form Data:", formData); // log for debugging
   };
-
+  // user, hold for user tracking around site
   const handleLoginSubmit = (user) => {
-    console.log("User logged in:", user);
-    // Add logic to handle user login in your app (e.g., update context)
+    console.log("User logged in:", user); // log for debugging
     setUser(user);
   };
-
+  // pet logging
   const handlePetSubmit = (petName) => {
-    console.log("Pet entered:", petName);
-    // Add logic to handle user login in your app (e.g., update context)
+    console.log("Pet entered:", petName); // log for debugging
   };
-
+  // site router routes
   return (
     <UserProvider>
       <Router>
         <div>
           <Header />
           <Routes>
-            {/* Default path when website is loaded (Home)*/}
+            {/* default path when website is loaded (Home)*/}
             <Route path="/" element={<Home />} />
 
             {/* other routes */}

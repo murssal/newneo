@@ -1,15 +1,15 @@
+/* Index CSS */
 /* Heffaklump Font https://fontmeme.com/fonts/heffaklump-font/*/
 @font-face {
-  font-family: 'Heffaklump';
-  src: url('./fonts/heffaklump/Heffaklump.ttf') format('truetype');
+  font-family: "Heffaklump";
+  src: url("./fonts/heffaklump/Heffaklump.ttf") format("truetype");
 }
 
 body {
-  font-family: 'Heffaklump', sans-serif;
+  font-family: "Heffaklump", sans-serif;
   font-weight: 600; /* Numeric value for bold */
-  background-image: url('https://wallpapercave.com/wp/wp11139121.jpg');
+  background-image: url("https://wallpapercave.com/wp/wp11139121.jpg");
 }
-
 
 /*default form (please specify classes for forms)*/
 form {
@@ -38,7 +38,7 @@ input {
 
 button {
   font-size: 16px;
-  font-family: 'Heffaklump', sans-serif;
+  font-family: "Heffaklump", sans-serif;
   font-weight: 600;
   background-color: #e6b72c;
   color: black;
@@ -80,7 +80,7 @@ button:hover {
 .signup-image {
   max-width: 125px;
   margin-right: 20px;
-  max-height:100%;
+  max-height: 100%;
   width: 100px;
   align-self: center;
 }
@@ -96,7 +96,6 @@ button:hover {
 .form-fields {
   flex-grow: 1;
 }
-
 
 /* home page CSS */
 .homeBG {
