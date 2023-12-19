@@ -77,7 +77,7 @@ const Shelter = ({ userId, onPetAdded }) => {
     setImageData(selectedPet.imageUrl);
 
     try {
-      fetch('http://localhost:5000/api/user-pets', {
+      fetch('https://newneobe.onrender.com/api/user-pets', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

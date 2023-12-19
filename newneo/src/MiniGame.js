@@ -8,7 +8,7 @@ const MiniGame = ({ user }) => {
     console.log("User ID:", user?.id);
     try {
       const response = await fetch(
-        "http://localhost:5000/api/playRockPaperScissors",
+        "https://newneobe.onrender.com/api/playRockPaperScissors",
         {
           method: "POST",
           headers: {

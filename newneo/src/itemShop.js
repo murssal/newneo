@@ -8,7 +8,7 @@ const ItemShop = ({ user }) => {
   useEffect(() => {
     console.log("User ID:", user?.id);
     // Fetch items
-    fetch("http://localhost:5000/api/items", {
+    fetch("https://newneobe.onrender.com/api/items", {
       credentials: "include",
     })
       .then((response) => {
@@ -31,7 +31,7 @@ const ItemShop = ({ user }) => {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/buy-item", {
+      const response = await fetch("https://newneobe.onrender.com/api/buy-item", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
