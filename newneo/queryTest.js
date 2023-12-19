@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 // Enable CORS for all routes
 //app.use(cors());
 // Allow requests from your Vercel deployment
-const allowedOrigins = ['https://newneo.vercel.app', 'http://localhost:3000'];
+const allowedOrigins = ['https://newneo.vercel.app', 'http://localhost:3000', 'https://shrouded-headland-73574-7682396d1db5.herokuapp.com/'];
 
 app.use(cors({
   origin: function (origin, callback) {

@@ -1,1 +1,1 @@
-web: node queryTest.js
+web: npm run dev
