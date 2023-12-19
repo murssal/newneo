@@ -30,7 +30,8 @@
   "render": {
     "buildCommand": "npm run dev",
     "staticPublishPath": "build",
-    "workingDirectory": "/opt/render/project"
+    "workingDirectory": "/opt/render/project",
+    "env": "PORT: 5000"
   },
   "eslintConfig": {
     "extends": [
