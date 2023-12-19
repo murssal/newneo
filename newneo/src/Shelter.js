@@ -5,17 +5,14 @@ const Shelter = ({ userId, onPetAdded }) => {
   const [petType, setPetType] = useState('');
   const [petName, setPetName] = useState('');
   const [imageData, setImageData] = useState('');
-  const [error, setError] = useState(null); // New error state
-  const [successMessage, setSuccessMessage] = useState(null); //success message
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     if (petOptions.length > 0) {
-      loadImageData(petOptions[0].imageUrl); // Load data for the first pet type
+      loadImageData(petOptions[0].imageUrl);
     }
   }, []);
-
-  
-
 
   const loadImageData = async (imageUrl) => {
     try {
@@ -23,22 +20,21 @@ const Shelter = ({ userId, onPetAdded }) => {
       setImageData(imageUrl);
     } catch (error) {
       console.error('Error loading image data:', error.message);
-      setError('Error loading image data'); // Set error state
+      setError('Error loading image data');
     }
   };
-  
+
   const potentialNames = [
     'Eyrie', 'Gelert', 'Gnorbu', 'Grarrl', 'Grundo', 'Hissi', 'Ixi', 'Jetsam',
     'JubJub', 'Kau', 'Kiko', 'Koi', 'Korbat', 'Krawk', 'Kyrii', 'Lenny',
     'Lupe', 'Lutari', 'Meerca', 'Moehog', 'Mynci', 'Max', 'Bella', 'Oliver', 'Chloe', 'Charlie', 'Lucy', 'Leo', 'Daisy', 'Milo',
     'Bella', 'Rocky', 'Lily', 'Teddy', 'Zoe', 'Oscar', 'Mia', 'Jasper', 'Sadie', 'Dexter'
   ];
-  
+
   const getRandomName = () => {
     const randomIndex = Math.floor(Math.random() * potentialNames.length);
     return potentialNames[randomIndex];
   };
-  
 
   const petOptions = [
     { name: getRandomName(), value: 'Aisha', imageUrl: 'https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/aisha.gif?v=1702338038022' },
@@ -62,14 +58,8 @@ const Shelter = ({ userId, onPetAdded }) => {
     usedPets.push(selectedPet);
     return selectedPet;
   };
-  
-  const selectedPets = Array.from({ length: 3 }, () => getRandomPet([]));
 
-  const handlePetTypeChange = (selectedPet) => {
-    setPetType(selectedPet.value);
-    setPetName(selectedPet.name); // Set the selected pet name
-    setImageData(selectedPet.imageUrl);
-  };
+  const selectedPets = Array.from({ length: 3 }, () => getRandomPet([]));
 
   const handlePetSelectAndAdd = (selectedPet) => {
     setPetType(selectedPet.value);
@@ -116,17 +106,16 @@ const Shelter = ({ userId, onPetAdded }) => {
     }
   };
 
-
   return (
     <div>
-    <div className='landing-BG'>
+      <div className='landing-BG'>
         <h2>Welcome to the Shelter!</h2>
         <p>
-            This is where you can meet and adopt new pets!
+          This is where you can meet and adopt new pets!
         </p>
-    </div>
+      </div>
 
-    <div className='shelter-container'>
+      <div className='shelter-container'>
         <div className='shelter-background'>
           {selectedPets.map((pet, index) => (
             <div key={index} className='pet-container'>
@@ -139,7 +128,6 @@ const Shelter = ({ userId, onPetAdded }) => {
         </div>
       </div>
     </div>
-
   );
 };
 
