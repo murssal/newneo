@@ -14,7 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
-  origin: "https://newneo.vercel.app/",
+  origin: "https://newneo.vercel.app",
   credentials: true,
 };
 
