@@ -1,4 +1,4 @@
-//Backend Node
+//queryTest.js
 const express = require("express");
 const path = require("path");
 const mysql = require("mysql2/promise");
@@ -15,11 +15,28 @@ const PORT = process.env.PORT || 5000;
 //app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 // Enable CORS for all routes
 //app.use(cors());
+// Allow requests from your Vercel deployment
+const allowedOrigins = ['https://newneo.vercel.app', 'http://localhost:3000'];
 
-const corsOptions = {
+app.use(cors({
+  origin: function (origin, callback) {
+    // Check if the origin is allowed, or if it's a same-origin request
+    if (!origin || allowedOrigins.includes(origin) || origin === 'http://localhost:3000') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+}));
+
+
+
+/* const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true,
-};
+}; */
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -42,7 +59,7 @@ const authenticateUser = (req, res, next) => {
   next(); // Continue to the next middleware or route handler
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, "newneo")));
 
