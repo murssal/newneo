@@ -26,6 +26,11 @@
     "server": "node queryTest.js",
     "dev": "concurrently \"npm run start\" \"npm run server\""
   },
+  "render": {
+    "buildCommand": "npm run dev",
+    "staticPublishPath": "build",
+    "workingDirectory": "/opt/render/project"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
