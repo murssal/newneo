@@ -94,6 +94,7 @@ app.use((req, res, next) => {
   console.log("User info:", req.session.user);
   console.log("session ID:", req.session.sessionID);
   console.log("Request Cookies:", req.headers.cookie);
+  console.log("Request Headers:", req.headers);
 
   next();
 });
@@ -159,15 +160,21 @@ app.post("/api/login", async (req, res) => {
       console.log("User info:", req.session.user);
       console.log("session ID:", req.sessionID);
       console.log("Request Cookies in login:", req.headers.cookie);
-
-      res
-        .status(200)
-        .json({ message: "Login successful!", user: req.session.user });
+      console.log("Request Headers:", req.headers);
+      // Regenerate session after a successful login
+      req.session.regenerate((err) => {
+        if (err) {
+          console.error("Error regenerating session:", err);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+        // Now, req.session is a new session
+        res.status(200).json({ message: "Login successful!" });
+      });
     } else {
       res.status(401).json({ error: "Invalid credentials." });
     }
 
-    //connection.release();
+    connection.release();
   } catch (error) {
     console.error("Error during login:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
@@ -177,15 +184,6 @@ app.post("/api/login", async (req, res) => {
 // New user-pets insert route
 app.post("/api/user-pets", authenticateUser, async (req, res) => {
   try {
-    // Regenerate session after a certain action (e.g., after user logs in)
-    req.session.regenerate((err) => {
-      if (err) {
-        console.error("Error regenerating session:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
-      // Now, req.session is a new session
-      res.status(200).json({ message: "Session regenerated successfully!" });
-    });
     const { pet_name, pet_type, image_data } = req.body;
 
     if (!pet_name || !pet_type) {
@@ -217,7 +215,7 @@ app.post("/api/user-pets", authenticateUser, async (req, res) => {
 });
 
 // route to fetch items for page display
-app.get("/api/items", authenticateUser, async (req, res) => {
+app.get("/api/items", async (req, res) => {
   console.log("/api/items - Session:", req.session);
   try {
     const user_id = req.session.user.id;
