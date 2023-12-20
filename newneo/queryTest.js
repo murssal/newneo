@@ -43,9 +43,8 @@ const authenticateUser = (req, res, next) => {
 
 app.use(cors(corsOptions));
 
-app.use(express.static(path.join(__dirname, "newneo")));
-
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "newneo")));
 
 // use cookie-parser middleware
 app.use(cookieParser());
