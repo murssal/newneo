@@ -78,9 +78,10 @@ app.use(
     store: sessionStore,
     cookie: {
       secure: true, // Use 'true' in production with HTTPS
-      sameSite: "Lax",
+      sameSite: "None",
       maxAge: 86400000, // session duration in milliseconds (1 day)
       httpOnly: true,
+      domain: ".newneobe.onrender.com",
       name: "connect.sid",
     },
   })
