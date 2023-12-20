@@ -77,6 +77,7 @@ app.use(
       secure: true, // Use 'true' in production with HTTPS
       sameSite: "None",
       maxAge: 86400000, // session duration in milliseconds (1 day)
+      httpOnly: true,
       name: "user-cookie",
     },
   })
@@ -86,6 +87,9 @@ app.use(
 app.use((req, res, next) => {
   console.log(sessionStore);
   console.log("Session data:", req.session);
+  console.log("Cookies:", req.cookies);
+  console.log("User info:", req.session.user);
+  console.log("session ID:", req.session.sessionID);
   next();
 });
 
