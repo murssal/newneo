@@ -62,6 +62,7 @@ app.use(
     saveUninitialized: true,
     cookie: {
       secure: true, // Use 'true' in production with HTTPS
+      sameSite: "None",
       maxAge: 86400000, // session duration in milliseconds (1 day)
     },
   })
