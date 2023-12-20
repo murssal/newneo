@@ -56,6 +56,7 @@ const sessionStore = new MySQLStore(
     expiration: 86400000, // Sessions expire after 24 hours
     connectionLimit: 10, // Allow up to 10 concurrent database connections
     endConnectionOnClose: false, // Keep the MySQL connection open when the store is closed
+    createDatabaseTable: true, // Automatically create the sessions table if not exists
   },
   pool
 );
