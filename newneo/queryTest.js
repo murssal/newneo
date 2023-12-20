@@ -161,15 +161,10 @@ app.post("/api/login", async (req, res) => {
       console.log("session ID:", req.sessionID);
       console.log("Request Cookies in login:", req.headers.cookie);
       console.log("Request Headers:", req.headers);
-      // Regenerate session after a successful login
-      req.session.regenerate((err) => {
-        if (err) {
-          console.error("Error regenerating session:", err);
-          return res.status(500).json({ error: "Internal Server Error" });
-        }
-        // Now, req.session is a new session
-        res.status(200).json({ message: "Login successful!" });
-      });
+
+      res
+        .status(200)
+        .json({ message: "Login successful!", user: req.session.user });
     } else {
       res.status(401).json({ error: "Invalid credentials." });
     }
