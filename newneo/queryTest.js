@@ -7,6 +7,7 @@ const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
+const MySQLStore = require("express-mysql-session")(session);
 
 dotenv.config();
 
@@ -49,6 +50,16 @@ app.use(express.json());
 // use cookie-parser middleware
 app.use(cookieParser());
 
+const sessionStore = new MySQLStore(
+  {
+    checkExpirationInterval: 900000, // Check for expired sessions every 15 minutes
+    expiration: 86400000, // Sessions expire after 24 hours
+    connectionLimit: 10, // Allow up to 10 concurrent database connections
+    endConnectionOnClose: false, // Keep the MySQL connection open when the store is closed
+  },
+  mysql.createPool(dbConfig)
+);
+
 // generate a random secret key
 const generateSecretKey = () => {
   return crypto.randomBytes(32).toString("hex");
@@ -60,6 +71,7 @@ app.use(
     secret: secretKey,
     resave: false,
     saveUninitialized: true,
+    store: sessionStore,
     cookie: {
       secure: true, // Use 'true' in production with HTTPS
       sameSite: "None",
