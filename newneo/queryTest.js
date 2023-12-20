@@ -20,6 +20,9 @@ const corsOptions = {
   credentials: true,
 };
 
+// use cookie-parser middleware
+app.use(cookieParser());
+
 //db connection
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -46,9 +49,6 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "newneo")));
-
-// use cookie-parser middleware
-//app.use(cookieParser());
 
 const sessionStore = new MySQLStore(
   {
@@ -85,11 +85,13 @@ app.use(
 
 // debugging, make sure user session is working
 app.use((req, res, next) => {
-  console.log(sessionStore);
+  console.log("SessionStore:", sessionStore);
   console.log("Session data:", req.session);
   console.log("Cookies:", req.cookies);
   console.log("User info:", req.session.user);
   console.log("session ID:", req.session.sessionID);
+  console.log("Request Cookies:", req.headers.cookie);
+
   next();
 });
 
@@ -153,6 +155,8 @@ app.post("/api/login", async (req, res) => {
       console.log("Cookies:", req.cookies);
       console.log("User info:", req.session.user);
       console.log("session ID:", req.sessionID);
+      console.log("Request Cookies in login:", req.headers.cookie);
+
       res
         .status(200)
         .json({ message: "Login successful!", user: req.session.user });
