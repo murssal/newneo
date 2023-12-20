@@ -150,6 +150,9 @@ app.post("/api/login", async (req, res) => {
         email: users[0].email,
       };
 
+      console.log("Cookies:", req.cookies);
+      console.log("User info:", req.session.user);
+      console.log("session ID:", req.sessionID);
       res
         .status(200)
         .json({ message: "Login successful!", user: req.session.user });
