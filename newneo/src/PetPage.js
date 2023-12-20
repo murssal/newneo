@@ -68,7 +68,7 @@ const PetPage = ({ user }) => {
 
     return (
         <div>
-            {pets.map((pet) => (
+            {pets && pets.map((pet) => (
                 <div key={pet.pet_id} className="petpageBG">
                     <div className="right">
                         <h2>{pet.pet_name}</h2>
