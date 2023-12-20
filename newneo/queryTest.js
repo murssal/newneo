@@ -95,7 +95,6 @@ app.use((req, res, next) => {
   console.log("session ID:", req.session.sessionID);
   console.log("Request Cookies:", req.headers.cookie);
   console.log("Request Headers:", req.headers);
-  console.log("document cookie:", document.cookie);
 
   next();
 });
@@ -211,7 +210,7 @@ app.post("/api/user-pets", authenticateUser, async (req, res) => {
 });
 
 // route to fetch items for page display
-app.get("/api/items", async (req, res) => {
+app.get("/api/items", authenticateUser, async (req, res) => {
   console.log("/api/items - Session:", req.session);
   try {
     const user_id = req.session.user.id;
