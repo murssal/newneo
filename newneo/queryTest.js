@@ -13,6 +13,7 @@ const jwt = require("jsonwebtoken"); // Include the JWT library
 dotenv.config();
 
 const app = express();
+
 const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
@@ -50,6 +51,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "newneo")));
 
+app.set("trust proxy", 1);
+
 const sessionStore = new MySQLStore(
   {
     checkExpirationInterval: 900000, // Check for expired sessions every 15 minutes
@@ -75,7 +78,7 @@ app.use(
     store: sessionStore,
     cookie: {
       secure: true, // Use 'true' in production with HTTPS
-      sameSite: "None",
+      sameSite: "Lax",
       maxAge: 86400000, // session duration in milliseconds (1 day)
       httpOnly: false,
       name: "connect.sid",
@@ -174,6 +177,15 @@ app.post("/api/login", async (req, res) => {
 // New user-pets insert route
 app.post("/api/user-pets", authenticateUser, async (req, res) => {
   try {
+    // Regenerate session after a certain action (e.g., after user logs in)
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error("Error regenerating session:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+      // Now, req.session is a new session
+      res.status(200).json({ message: "Session regenerated successfully!" });
+    });
     const { pet_name, pet_type, image_data } = req.body;
 
     if (!pet_name || !pet_type) {

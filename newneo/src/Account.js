@@ -10,7 +10,7 @@ const Account = ({ user }) => {
   useEffect(() => {
     console.log("User ID:", user?.id);
     // Fetch user information (username and neopoints)
-    fetch("http://localhost:5000/api/account-user-info", {
+    fetch("https://newneobe.onrender.com/api/account-user-info", {
       credentials: "include",
     })
       .then((response) => {
@@ -32,7 +32,7 @@ const Account = ({ user }) => {
       });
 
     // Fetch user items
-    fetch("http://localhost:5000/api/account-user-items", {
+    fetch("https://newneobe.onrender.com/api/account-user-items", {
       credentials: "include",
     })
       .then((response) => {
@@ -49,7 +49,7 @@ const Account = ({ user }) => {
       });
 
     // Fetch user pets
-    fetch("http://localhost:5000/api/account-user-pets", {
+    fetch("https://newneobe.onrender.com/api/account-user-pets", {
       credentials: "include",
     })
       .then((response) => {

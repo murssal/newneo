@@ -61,19 +61,22 @@ const PetForm = ({ userId, onPetAdded }) => {
     try {
       const selectedPet = petOptions.find((pet) => pet.value === petType);
 
-      const response = await fetch("http://localhost:5000/api/user-pets", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: userId,
-          pet_name: petName,
-          pet_type: petType,
-          image_data: imageData,
-        }),
-        credentials: "include",
-      });
+      const response = await fetch(
+        "https://newneobe.onrender.com/api/user-pets",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            pet_name: petName,
+            pet_type: petType,
+            image_data: imageData,
+          }),
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         console.log("Pet added successfully!");

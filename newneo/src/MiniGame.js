@@ -8,7 +8,7 @@ const MiniGame = ({ user }) => {
     console.log("User ID:", user?.id);
     try {
       const response = await fetch(
-        "http://localhost:5000/api/playRockPaperScissors",
+        "https://newneobe.onrender.com/api/playRockPaperScissors",
         {
           method: "POST",
           headers: {
@@ -38,7 +38,7 @@ const MiniGame = ({ user }) => {
       <div className="choices-container">
         <label>
           Your Choice:
-            <br />
+          <br />
           <select
             value={userChoice}
             onChange={(e) => setUserChoice(e.target.value)}
@@ -49,7 +49,9 @@ const MiniGame = ({ user }) => {
             <option value="scissors">Scissors</option>
           </select>
         </label>
-        <button className={"playButton"} onClick={handlePlayClick}>Play</button>
+        <button className={"playButton"} onClick={handlePlayClick}>
+          Play
+        </button>
       </div>
       {gameResult && (
         <div className="result-container">
