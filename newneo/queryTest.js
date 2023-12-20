@@ -73,7 +73,7 @@ const secretKey = generateSecretKey(); // generate only once
 app.use(
   session({
     secret: secretKey,
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
