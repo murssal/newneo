@@ -77,6 +77,7 @@ app.use(
       secure: true, // Use 'true' in production with HTTPS
       sameSite: "None",
       maxAge: 86400000, // session duration in milliseconds (1 day)
+      name: "user-cookie",
     },
   })
 );
@@ -545,6 +546,8 @@ app.post("/api/logout", (req, res) => {
       console.error("Error during logout:", err.message);
       res.status(500).json({ error: "Internal Server Error" });
     } else {
+      // Clear the session cookie on the client side
+      res.clearCookie("user-cookie", { path: "/" });
       res.status(200).json({ message: "Logout successful!" });
     }
   });
