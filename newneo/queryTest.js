@@ -78,7 +78,7 @@ app.use(
       sameSite: "None",
       maxAge: 86400000, // session duration in milliseconds (1 day)
       httpOnly: false,
-      name: "user-cookie",
+      name: "connect.sid",
     },
   })
 );
@@ -558,7 +558,7 @@ app.post("/api/logout", (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     } else {
       // Clear the session cookie on the client side
-      res.clearCookie("user-cookie", { path: "/" });
+      res.clearCookie("connect.sid", { path: "/" });
       res.status(200).json({ message: "Logout successful!" });
     }
   });
