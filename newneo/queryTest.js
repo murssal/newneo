@@ -96,11 +96,7 @@ app.use((req, res, next) => {
   console.log("Request Cookies:", req.headers.cookie);
   console.log("Request Headers:", req.headers);
 
-  // Check session after authentication middleware
-  authenticateUser(req, res, () => {
-    console.log("Session after authentication check:", req.session);
-    next();
-  });
+  next();
 });
 
 //Register
