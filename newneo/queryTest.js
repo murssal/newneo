@@ -32,26 +32,14 @@ const pool = mysql.createPool({
 });
 
 // middleware to check if the user is authenticated
-// middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
-  const userToken = req.cookies.userToken;
+  const user = req.session.user;
 
-  if (!userToken) {
+  if (!user || !user.id) {
     return res.status(401).json({ error: "User not authenticated." });
   }
 
-  try {
-    // Verify the token
-    const decoded = jwt.verify(userToken, process.env.JWT_SECRET);
-
-    // Store user information in the request for further use
-    req.user = decoded.user;
-
-    next();
-  } catch (error) {
-    console.error("Error during authentication:", error.message);
-    res.status(401).json({ error: "Invalid token." });
-  }
+  next();
 };
 
 app.use(cors(corsOptions));
@@ -60,7 +48,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "newneo")));
 
 // use cookie-parser middleware
-app.use(cookieParser());
+//app.use(cookieParser());
 
 const sessionStore = new MySQLStore(
   {
@@ -82,7 +70,7 @@ app.use(
   session({
     secret: secretKey,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: sessionStore,
     cookie: {
       secure: true, // Use 'true' in production with HTTPS
@@ -146,35 +134,17 @@ app.post("/api/login", async (req, res) => {
     const [users] = await connection.execute(selectQuery, [username, password]);
 
     if (users.length === 1) {
-      // Generate a JWT token
-      const userToken = jwt.sign(
-        {
-          user: {
-            id: users[0].user_id,
-            username: users[0].username,
-            email: users[0].email,
-          },
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" } // Token expires in 1 day
-      );
+      // Store user information in the session
+      req.session.authenticated = true;
+      req.session.user = {
+        id: users[0].user_id,
+        username: users[0].username,
+        email: users[0].email,
+      };
 
-      // Set the token in a secure, HTTP-only cookie
-      res.cookie("userToken", userToken, {
-        httpOnly: true,
-        secure: true, // Use 'true' in production with HTTPS
-        sameSite: "None",
-        maxAge: 86400000, // cookie duration in milliseconds (1 day)
-      });
-
-      res.status(200).json({
-        message: "Login successful!",
-        user: {
-          id: users[0].user_id,
-          username: users[0].username,
-          email: users[0].email,
-        },
-      });
+      res
+        .status(200)
+        .json({ message: "Login successful!", user: req.session.user });
     } else {
       res.status(401).json({ error: "Invalid credentials." });
     }
@@ -197,7 +167,7 @@ app.post("/api/user-pets", authenticateUser, async (req, res) => {
         .json({ error: "Pet name and pet type are required." });
     }
 
-    const user_id = req.user.id;
+    const user_id = req.session.user.id;
 
     const connection = await pool.getConnection();
 
