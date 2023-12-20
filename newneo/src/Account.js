@@ -7,64 +7,95 @@ const Account = ({ user }) => {
   const [userPets, setUserPets] = useState([]);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    console.log("User ID:", user?.id);
-    // Fetch user information (username and neopoints)
-    fetch("http://localhost:5000/api/account-user-info", {
-      credentials: "include",
+useEffect(() => {
+  // log the user ID
+  console.log("user ID:", user?.id);
+  
+  // Fetch user information (username and neopoints)
+  fetch("https://newneobe.onrender.com/api/account-user-info", {
+    credentials: "include",
+  })
+    .then((response) => {
+      // log the HTTP response
+      console.log("response:", response);
+
+      // check for successful response
+      if (!response.ok) {
+        // throw an error if the response is not ok
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      // return the response as JSON
+      return response.json();
     })
-      .then((response) => {
-        console.log("Response:", response);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-
-      .then((data) => {
-        console.log("Data:", data); // Log the actual data
-        setUserInfo(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching user info:", error);
-        setError("Failed to fetch user info");
-      });
-
-    // Fetch user items
-    fetch("http://localhost:5000/api/account-user-items", {
-      credentials: "include",
+    .then((data) => {
+      // log the actual data received
+      console.log("data:", data);
+      
+      // set the user information in the component state
+      setUserInfo(data);
     })
-      .then((response) => {
-        console.log("Response:", response);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-        .then((data) => setUserItems(data.items))
-      .catch((error) => {
-        console.error("Error fetching user items:", error);
-        setError("Failed to fetch user items");
-      });
+    .catch((error) => {
+      // log and set an error message if fetching fails
+      console.error("error fetching user info:", error);
+      setError("failed to fetch user info");
+    });
 
-    // Fetch user pets
-    fetch("http://localhost:5000/api/account-user-pets", {
-      credentials: "include",
+  // Fetch user items
+  fetch("https://newneobe.onrender.com/api/account-user-items", {
+    credentials: "include",
+  })
+    .then((response) => {
+      // log the HTTP response
+      console.log("response:", response);
+
+      // check for successful response
+      if (!response.ok) {
+        // throw an error if the response is not ok
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      // return the response as JSON
+      return response.json();
     })
-      .then((response) => {
-        console.log("Response:", response);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => setUserPets(data.pets))
-      .catch((error) => {
-        console.error("Error fetching user pets:", error);
-        setError("Failed to fetch user pets");
-      });
-  }, []); // Empty dependency array to run the effect only once on mount
+    .then((data) => {
+      // set the user items in the component state
+      setUserItems(data.items);
+    })
+    .catch((error) => {
+      // log and set an error message if fetching fails
+      console.error("error fetching user items:", error);
+      setError("failed to fetch user items");
+    });
+
+  // Fetch user pets
+  fetch("https://newneobe.onrender.com/api/account-user-pets", {
+    credentials: "include",
+  })
+    .then((response) => {
+      // log the HTTP response
+      console.log("response:", response);
+
+      // check for successful response
+      if (!response.ok) {
+        // throw an error if the response is not ok
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      // return the response as JSON
+      return response.json();
+    })
+    .then((data) => {
+      // set the user pets in the component state
+      setUserPets(data.pets);
+    })
+    .catch((error) => {
+      // log and set an error message if fetching fails
+      console.error("error fetching user pets:", error);
+      setError("failed to fetch user pets");
+    });
+}, []); // Empty dependency array to run the effect only once on mount
+
 
   return (
     <div className="account-text-container">

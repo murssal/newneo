@@ -1,4 +1,5 @@
 const reportWebVitals = onPerfEntry => {
+  // Import web-vitals and gather performance metrics
   if (onPerfEntry && onPerfEntry instanceof Function) {
     import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
       getCLS(onPerfEntry);

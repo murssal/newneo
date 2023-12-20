@@ -1,3 +1,4 @@
+/* Background for ItemShop */
 .background {
     background: #e6b72c;
     border-radius: 50px;
@@ -7,22 +8,24 @@
     padding-top: 10px;
 }
 
+/* Item grid layout */
 .item-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* three columns */
+    grid-template-columns: repeat(3, 1fr); /* Three columns */
     gap: 0px;
     margin: 0 auto;
     max-width: 800px;
 }
 
+/* Item card */
 .item-card {
     margin: 20px;
     border-radius: 40px;
-
     text-align: center;
     background: #f5d578;
 }
 
+/* Buy button */
 .buy-button {
     color: white;
     padding: 10px 20px;
@@ -34,6 +37,7 @@
     cursor: pointer;
 }
 
+/* Image for items */
 .item-image {
     max-width: 100%;
     height: auto;

@@ -2,36 +2,42 @@ import React, { useState, useEffect } from "react";
 import "./PetForm.css";
 
 const PetForm = ({ userId, onPetAdded }) => {
+  // State variables for pet form
   const [petType, setPetType] = useState("");
   const [petName, setPetName] = useState("");
   const [imageData, setImageData] = useState("");
-  const [error, setError] = useState(null); // New error state
-  const [successMessage, setSuccessMessage] = useState(null); //success message
+  const [error, setError] = useState(null); // Error state for image loading
+  const [successMessage, setSuccessMessage] = useState(null); // Success message
 
-  useEffect(() => {
-    if (petOptions.length > 0) {
-      loadImageData(petOptions[0].imageUrl); // Load data for the first pet type
-    }
-  }, []);
+// Load image data for the first pet type on component
+useEffect(() => {
+  if (petOptions.length > 0) {
+    loadImageData(petOptions[0].imageUrl);
+  }
+}, []);
 
-  const handlePetTypeChange = (event) => {
-    const selectedPetType = event.target.value;
-    const selectedPet = petOptions.find((pet) => pet.value === selectedPetType);
-    setPetType(selectedPetType);
+// Handle pet type change event
+const handlePetTypeChange = (event) => {
+  const selectedPetType = event.target.value;
+  const selectedPet = petOptions.find((pet) => pet.value === selectedPetType);
+  setPetType(selectedPetType);
 
-    loadImageData(selectedPet.imageUrl);
-  };
+  // Load image data for the selected pet type
+  loadImageData(selectedPet.imageUrl);
+};
 
-  const loadImageData = async (imageUrl) => {
-    try {
-      console.log("Image URL loaded successfully:", imageUrl);
-      setImageData(imageUrl);
-    } catch (error) {
-      console.error("Error loading image data:", error.message);
-      setError("Error loading image data"); // Set error state
-    }
-  };
+// Load image data asynchronously
+const loadImageData = async (imageUrl) => {
+  try {
+    console.log("Image URL loaded successfully:", imageUrl);
+    setImageData(imageUrl);
+  } catch (error) {
+    console.error("Error loading image data:", error.message);
+    setError("Error loading image data"); // Set error state
+  }
+};
 
+/*pet options to choose from (4)*/
   const petOptions = [
     {
       value: "Aisha",
@@ -55,13 +61,14 @@ const PetForm = ({ userId, onPetAdded }) => {
     },
   ];
 
+  /*For handling submission */
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       const selectedPet = petOptions.find((pet) => pet.value === petType);
 
-      const response = await fetch("http://localhost:5000/api/user-pets", {
+      const response = await fetch("https://newneobe.onrender.com/api/user-pets", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,3 +1,4 @@
+//PetPage.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PetPage.css";
@@ -26,7 +27,7 @@ const PetPage = ({ user }) => {
         setPets(updatedPets);
 
         // Make a request to update the server-side for the specific pet
-        fetch("http://localhost:5000/api/update-pet-hunger", {
+        fetch("https://newneobe.onrender.com/api/update-pet-hunger", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -57,7 +58,7 @@ const PetPage = ({ user }) => {
     };
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/user-pets", { credentials: "include" })
+        fetch("https://newneobe.onrender.com/api/user-pets", { credentials: "include" })
             .then((response) => response.json())
             .then((data) => {
                 setPets(data.pets);
@@ -67,7 +68,7 @@ const PetPage = ({ user }) => {
 
     return (
         <div>
-            {pets.map((pet) => (
+            {pets && pets.map((pet) => (
                 <div key={pet.pet_id} className="petpageBG">
                     <div className="right">
                         <h2>{pet.pet_name}</h2>

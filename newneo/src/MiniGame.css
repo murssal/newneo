@@ -1,5 +1,6 @@
+/* Container for mini game */
 .minigame-container {
-    font-family: Arial, sans-serif;
+    font-family: arial, sans-serif;
     text-align: center;
     width: 600px;
     background: #f5d578;
@@ -8,22 +9,26 @@
     padding: 15px;
 }
 
+/* Choices container */
 .choices-container {
     margin-top: 20px;
 }
 
+/* Labels */
 label {
-    font-family: 'Heffaklump', sans-serif;
+    font-family: 'heffaklump', sans-serif;
     display: block;
     margin-bottom: 10px;
 }
 
+/* Select dropdown */
 select {
-    font-family: 'Heffaklump', sans-serif;
+    font-family: 'heffaklump', sans-serif;
     padding: 5px;
     font-size: 20px;
 }
 
+/* Play button */
 .playButton {
     padding: 8px 15px;
     font-size: 14px;
@@ -34,8 +39,9 @@ select {
     cursor: pointer;
 }
 
+/* Result container */
 .result-container {
     margin-top: 20px;
     font-weight: bold;
-    font-family: 'Heffaklump', sans-serif;
+    font-family: 'heffaklump', sans-serif;
 }

@@ -11,6 +11,7 @@
     overflow: auto;
   }
 
+  /* Holds shelter (where pets will be listed) */
   .shelter-container {
     max-width: 80%;
     max-height: 100%;
@@ -30,6 +31,7 @@
     
   }
 
+  /*Background within container*/
   .shelter-background{
     height: 100%;
     width: 100%;
@@ -48,6 +50,7 @@
     overflow: auto;
   }
 
+  /*Container to hold pets and pet images*/
   .pet-container {
     width: 30%;
     height: 80%;
@@ -62,6 +65,7 @@
     justify-content: center;
   }
   
+  /* Pet image within container*/
   .pet-container img {
     display: block;
     margin: 0 auto;

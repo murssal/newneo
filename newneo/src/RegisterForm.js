@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './index.css'
 
 const RegisterForm = () => {
+  // State variables for user registration form
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -10,29 +11,30 @@ const RegisterForm = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
 
     try {
       setLoading(true);
 
-      const response = await fetch('http://localhost:5000/api/users', {
+      // Send user registration data to the server
+      const response = await fetch('https://newneobe.onrender.com/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password, email }),
-        
       });
 
+      // Check server response
       if (response.ok) {
         console.log('User added successfully!');
         setSuccessMessage('User registered successfully!');
         setErrorMessage('');
       } else {
         console.error(`Failed to add user. Server responded with ${response.status}`);
-        setErrorMessage(`A user with that name or email already exists!`);
+        setErrorMessage('A user with that name or email already exists!');
         setSuccessMessage('');
       }
     } catch (error) {
@@ -43,6 +45,7 @@ const RegisterForm = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <div>

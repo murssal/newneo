@@ -1,26 +1,30 @@
 // Header.js
 
 import React from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import Link and useHistory from react-router-dom
+import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "./UserContext";
 import "./Header.css"; // Import the CSS file
 
+// Header component definition
 const Header = () => {
   const { isLoggedIn, logout } = useUser();
   const navigate = useNavigate(); // Access the history object
 
+  // Handle click event for each menu item
   const handleItemClick = (item) => {
-    // Handle the click event for each menu item
     console.log(`Clicked on ${item}`);
   };
 
+  // Handle logout event
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/logout", {
+      // Send logout request to the server
+      const response = await fetch("https://newneobe.onrender.com/api/logout", {
         method: "POST",
         credentials: "include",
       });
 
+      // Check if logout was successful
       if (response.ok) {
         console.log("Logout successful");
         // Redirect to the logout confirmation page
@@ -33,6 +37,7 @@ const Header = () => {
     }
   };
 
+  
   return (
     <header>
       <div className="logo-container">
@@ -49,6 +54,7 @@ const Header = () => {
             <></>
           ) : (
             <>
+              {/* Navigation menu items for users */}
               <li>
                 <Link to="/" onClick={() => handleItemClick("Home")}>
                   home
@@ -81,12 +87,18 @@ const Header = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/account" onClick={() => handleItemClick("Account")}>
+                <Link
+                  to="/account"
+                  onClick={() => handleItemClick("Account")}
+                >
                   account
                 </Link>
               </li>
               <li>
-                <Link to="/pets" onClick={() => handleItemClick("CreatePet")}>
+                <Link
+                  to="/pets"
+                  onClick={() => handleItemClick("CreatePet")}
+                >
                   create a pet
                 </Link>
               </li>
@@ -99,11 +111,15 @@ const Header = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/PetPage" onClick={() => handleItemClick("PetPage")}>
+                <Link
+                  to="/PetPage"
+                  onClick={() => handleItemClick("PetPage")}
+                >
                   my pets
                 </Link>
               </li>
               <li>
+                {/* Logout button for users */}
                 <button onClick={handleLogout}>Log Out</button>
               </li>
             </>
