@@ -1,3 +1,4 @@
+//Backend Node
 const express = require("express");
 const path = require("path");
 const mysql = require("mysql2/promise");
@@ -6,6 +7,7 @@ const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
+const MySQLStore = require("express-mysql-session")(session);
 const jwt = require("jsonwebtoken"); // Include the JWT library
 
 dotenv.config();
@@ -18,7 +20,7 @@ const corsOptions = {
   credentials: true,
 };
 
-// db connection
+//db connection
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -29,6 +31,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+// middleware to check if the user is authenticated
 // middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
   const userToken = req.cookies.userToken;
@@ -52,11 +55,22 @@ const authenticateUser = (req, res, next) => {
 };
 
 app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "newneo")));
 
 // use cookie-parser middleware
 app.use(cookieParser());
+
+const sessionStore = new MySQLStore(
+  {
+    checkExpirationInterval: 900000, // Check for expired sessions every 15 minutes
+    expiration: 86400000, // Sessions expire after 24 hours
+    connectionLimit: 10, // Allow up to 10 concurrent database connections
+    endConnectionOnClose: false, // Keep the MySQL connection open when the store is closed
+  },
+  pool
+);
 
 // generate a random secret key
 const generateSecretKey = () => {
@@ -69,6 +83,7 @@ app.use(
     secret: secretKey,
     resave: false,
     saveUninitialized: true,
+    store: sessionStore,
     cookie: {
       secure: true, // Use 'true' in production with HTTPS
       sameSite: "None",
@@ -83,7 +98,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Register
+//Register
 app.post("/api/users", async (req, res) => {
   try {
     const { username, password, email } = req.body;
@@ -152,16 +167,14 @@ app.post("/api/login", async (req, res) => {
         maxAge: 86400000, // cookie duration in milliseconds (1 day)
       });
 
-      res
-        .status(200)
-        .json({
-          message: "Login successful!",
-          user: {
-            id: users[0].user_id,
-            username: users[0].username,
-            email: users[0].email,
-          },
-        });
+      res.status(200).json({
+        message: "Login successful!",
+        user: {
+          id: users[0].user_id,
+          username: users[0].username,
+          email: users[0].email,
+        },
+      });
     } else {
       res.status(401).json({ error: "Invalid credentials." });
     }
@@ -204,10 +217,6 @@ app.post("/api/user-pets", authenticateUser, async (req, res) => {
     console.error("Error adding pet:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
 });
 
 // route to fetch items for page display
