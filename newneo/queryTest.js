@@ -73,14 +73,14 @@ const secretKey = generateSecretKey(); // generate only once
 app.use(
   session({
     secret: secretKey,
-    resave: false,
-    saveUninitialized: true,
+    resave: true,
+    saveUninitialized: false,
     store: sessionStore,
     cookie: {
       secure: true, // Use 'true' in production with HTTPS
       sameSite: "Lax",
       maxAge: 86400000, // session duration in milliseconds (1 day)
-      httpOnly: false,
+      httpOnly: true,
       name: "connect.sid",
     },
   })
@@ -95,6 +95,7 @@ app.use((req, res, next) => {
   console.log("session ID:", req.session.sessionID);
   console.log("Request Cookies:", req.headers.cookie);
   console.log("Request Headers:", req.headers);
+  console.log("document cookie:", document.cookie);
 
   next();
 });
