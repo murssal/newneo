@@ -17,7 +17,9 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4",
     "concurrently": "^7.0.0",
-    "express-session": "^1.17.3"
+    "express-session": "^1.17.3",
+    "express-mysql-session": "^2.1.0",
+    "mysql": "^2.18.1"
   },
   "scripts": {
     "start": "react-scripts start",
