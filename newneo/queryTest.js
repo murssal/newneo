@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("path");
 const mysql = require("mysql2/promise");
 const dotenv = require("dotenv");
-const cors = require("cors"); // Import the cors middleware
+const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
@@ -15,13 +15,15 @@ const PORT = process.env.PORT || 5000;
 //app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 // Enable CORS for all routes
 //app.use(cors());
-// Allow requests from your Vercel deployment
+
+//enable CORS for allowing server requests from these urls
 const allowedOrigins = ['https://newneo.vercel.app', 'http://localhost:3000'];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Check if the origin is allowed, or if it's a same-origin request
+    // Check if the origin is in list of allowedOrigins, or if is localhost
     if (!origin || allowedOrigins.includes(origin) || origin === 'http://localhost:3000') {
+      // Then it is allowed
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -31,13 +33,7 @@ app.use(cors({
   credentials: true,
 }));
 
-
-
-/* const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true,
-}; */
-
+//database connection config
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -59,10 +55,8 @@ const authenticateUser = (req, res, next) => {
   next(); // Continue to the next middleware or route handler
 };
 
-// app.use(cors(corsOptions));
-
+// serve static files from the 'newneo' directory w/ express
 app.use(express.static(path.join(__dirname, "newneo")));
-
 app.use(express.json());
 
 // Use cookie-parser middleware
@@ -81,12 +75,12 @@ app.use(
     saveUninitialized: true,
     cookie: {
       secure: false, // Use 'true' in production with HTTPS
-      maxAge: 86400000, // Session duration in milliseconds (e.g., 1 day)
+      maxAge: 86400000, // Session duration in milliseconds
     },
   })
 );
 
-// Add debugging middleware
+// Debugging middleware
 app.use((req, res, next) => {
   console.log("Session data:", req.session);
   next();
@@ -95,72 +89,98 @@ app.use((req, res, next) => {
 //User Register
 app.post("/api/users", async (req, res) => {
   try {
+    // extract username, password, and email from the request body
     const { username, password, email } = req.body;
 
+    // check if username, password, and email are provided
     if (!username || !password || !email) {
+      // respond with a 400 Bad Request if any of them is missing
       return res
         .status(400)
-        .json({ error: "Username, password, and email are required." });
+        .json({ error: "username, password, and email are required." });
     }
 
+    // establish a connection to the database
     const connection = await pool.getConnection();
 
+    // SQL query to insert user data into 'users' table
     const insertQuery =
       "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+    
+    // execute the insert query with user data
     const [result] = await connection.execute(insertQuery, [
       username,
       password,
       email,
     ]);
 
+    // release the database connection
     connection.release();
 
-    res.status(200).json({ message: "User added successfully!" });
+    // respond with a 200 OK status and a success message
+    res.status(200).json({ message: "user added successfully!" });
   } catch (error) {
-    console.error("Error adding user:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    // log any errors that occur during user registration
+    console.error("error adding user:", error.message);
+    
+    // respond with a 500 Internal Server Error for unexpected errors
+    res.status(500).json({ error: "internal server error" });
   }
 });
 
 // User login route
-
 app.post("/api/login", async (req, res) => {
   try {
+    // extract username and password from the request body
     const { username, password } = req.body;
 
+    // check if both username and password are provided
     if (!username || !password) {
+      // respond with a 400 Bad Request if any of them is missing
       return res
         .status(400)
-        .json({ error: "Username and password are required." });
+        .json({ error: "username and password are required." });
     }
 
+    // establish a connection to the database
     const connection = await pool.getConnection();
 
+    // SQL query to select user data based on username and password
     const selectQuery =
       "SELECT * FROM users WHERE username = ? AND password = ?";
+    
+    // execute the select query with provided user credentials
     const [users] = await connection.execute(selectQuery, [username, password]);
 
+    // check if exactly one user is found with the provided credentials
     if (users.length === 1) {
-      // Store user information in the session
+      // store user information in the session
       req.session.user = {
         id: users[0].user_id,
         username: users[0].username,
         email: users[0].email,
       };
 
+      // respond with a 200 OK status and success message along with user information
       res
         .status(200)
-        .json({ message: "Login successful!", user: req.session.user });
+        .json({ message: "login successful!", user: req.session.user });
     } else {
-      res.status(401).json({ error: "Invalid credentials." });
+      // respond with a 401 Unauthorized status for invalid credentials
+      res.status(401).json({ error: "invalid credentials." });
     }
 
+    // release the database connection
     connection.release();
   } catch (error) {
-    console.error("Error during login:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    // log any errors that occur during login
+    console.error("error during login:", error.message);
+    
+    // respond with a 500 Internal Server Error for unexpected errors
+    res.status(500).json({ error: "internal server error" });
   }
 });
+
 
 // New user-pets insert route
 app.post("/api/user-pets", authenticateUser, async (req, res) => {
@@ -494,6 +514,7 @@ app.get("/api/account-user-info", authenticateUser, async (req, res) => {
   }
 });
 
+//Fetch user's items
 app.get("/api/account-user-items", authenticateUser, async (req, res) => {
   try {
     const userId = req.session.user.id;
@@ -518,24 +539,32 @@ app.get("/api/account-user-items", authenticateUser, async (req, res) => {
   }
 });
 
+// Fetch user's pets
 app.get("/api/account-user-pets", authenticateUser, async (req, res) => {
   try {
+    // get the user ID from the session
     const userId = req.session.user.id;
+    
+    // establish a connection to the database
     const connection = await pool.getConnection();
 
-    // Fetch user pets from the user_pets table
+    // SQL query to fetch user pets from the user_pets table based on user ID
     const [userPets] = await connection.execute(
       "SELECT pet_name, pet_type FROM user_pets WHERE user_id = ?",
       [userId]
     );
 
-    // Send the user pets as JSON response
+    // send the user pets as a JSON response
     res.json({ pets: userPets });
   } catch (error) {
-    console.error("Error fetching user pets:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    // log any errors that occur during the fetching of user pets
+    console.error("error fetching user pets:", error.message);
+    
+    // respond with a 500 Internal Server Error for unexpected errors
+    res.status(500).json({ error: "internal server error" });
   }
 });
+
 
 // User logout route
 app.post("/api/logout", (req, res) => {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Shelter.css';
 
 const Shelter = ({ userId, onPetAdded }) => {
+  // State variables
   const [petType, setPetType] = useState('');
   const [petName, setPetName] = useState('');
   const [imageData, setImageData] = useState('');
@@ -16,7 +17,7 @@ const Shelter = ({ userId, onPetAdded }) => {
 
   
 
-
+// Ensure image data loads asyncronously
   const loadImageData = async (imageUrl) => {
     try {
       console.log('Image URL loaded successfully:', imageUrl);
@@ -27,6 +28,7 @@ const Shelter = ({ userId, onPetAdded }) => {
     }
   };
   
+  // Random pet names that are available
   const potentialNames = [
     'Eyrie', 'Gelert', 'Gnorbu', 'Grarrl', 'Grundo', 'Hissi', 'Ixi', 'Jetsam',
     'JubJub', 'Kau', 'Kiko', 'Koi', 'Korbat', 'Krawk', 'Kyrii', 'Lenny',
@@ -34,12 +36,14 @@ const Shelter = ({ userId, onPetAdded }) => {
     'Bella', 'Rocky', 'Lily', 'Teddy', 'Zoe', 'Oscar', 'Mia', 'Jasper', 'Sadie', 'Dexter'
   ];
   
+  // Function to pick a random name
   const getRandomName = () => {
     const randomIndex = Math.floor(Math.random() * potentialNames.length);
     return potentialNames[randomIndex];
   };
   
 
+  // Pool of options of pets to get
   const petOptions = [
     { name: getRandomName(), value: 'Aisha', imageUrl: 'https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/aisha.gif?v=1702338038022' },
     { name: getRandomName(), value: 'Flotsam', imageUrl: 'https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/flotsam.gif?v=1702341566583' },
@@ -55,6 +59,7 @@ const Shelter = ({ userId, onPetAdded }) => {
     { name: getRandomName(), value: 'Xweetok', imageUrl: 'https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/xweetok.gif?v=1702511832045'},
   ];
 
+  // Function to choose a random pet
   const getRandomPet = (usedPets) => {
     let availablePets = petOptions.filter(pet => !usedPets.includes(pet));
     const randomIndex = Math.floor(Math.random() * availablePets.length);
@@ -63,14 +68,17 @@ const Shelter = ({ userId, onPetAdded }) => {
     return selectedPet;
   };
   
+  // Helper function for getRandomPet
   const selectedPets = Array.from({ length: 3 }, () => getRandomPet([]));
 
+  // Sets selected Pet for database insertion
   const handlePetTypeChange = (selectedPet) => {
     setPetType(selectedPet.value);
     setPetName(selectedPet.name); // Set the selected pet name
     setImageData(selectedPet.imageUrl);
   };
 
+  // Insert Pet to database
   const handlePetSelectAndAdd = (selectedPet) => {
     setPetType(selectedPet.value);
     setPetName(selectedPet.name);

@@ -1,17 +1,21 @@
 // LoginForm.js
+
 import React, { useState } from "react";
 import "./index.css";
+
+// LoginForm component
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Update the endpoint URL based on your backend route
+      // Fetch from server
       const response = await fetch("https://newneobe.onrender.com/api/login", {
         method: "POST",
         headers: {
@@ -46,40 +50,54 @@ const LoginForm = ({ onLogin }) => {
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <img
-        alt="login"
-        className="formImg"
-        src={
-          "https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/login.gif?v=1702431752703"
-        }
-      ></img>
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      {successMessage && (
-        <div className="success-message">{successMessage}</div>
-      )}
-      <label>
-        Username:
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </label>
-      <br />
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </label>
-      <br />
-      <button type="submit">LOGIN</button>
-    </form>
-  );
+  // rendering the login form
+return (
+  // Login form with image, error and success messages, username, password input fields, and login button
+  <form onSubmit={handleSubmit}>
+    {/* Login image */}
+    <img
+      alt="login"
+      className="formImg"
+      src={
+        "https://cdn.glitch.global/d13492b2-e8bf-41cb-a366-1a7a92064757/login.gif?v=1702431752703"
+      }
+    ></img>
+    
+    {errorMessage && <div className="error-message">{errorMessage}</div>}
+    
+    {successMessage && (
+      <div className="success-message">{successMessage}</div>
+    )}
+    
+    {/* Username input field */}
+    <label>
+      Username:
+      <input
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+    </label>
+    
+    <br />
+    
+    {/* Password input field */}
+    <label>
+      Password:
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+    </label>
+    
+    <br />
+    
+    {/* Login button */}
+    <button type="submit">LOGIN</button>
+  </form>
+);
+
 };
 
 export default LoginForm;

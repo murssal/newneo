@@ -1,36 +1,47 @@
+// MiniGame.js
+
 import React, { useState } from "react";
 import "./MiniGame.css";
+
+// MiniGame component: user choice and results of playing
 const MiniGame = ({ user }) => {
   const [userChoice, setUserChoice] = useState("");
   const [gameResult, setGameResult] = useState(null);
 
-  const handlePlayClick = async () => {
-    console.log("User ID:", user?.id);
-    try {
-      const response = await fetch(
-        "https://newneobe.onrender.com/api/playRockPaperScissors",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userChoice,
-          }),
-          credentials: "include",
-        }
-      );
+  // Handle play button Onclick for mini game
+const handlePlayClick = async () => {
+  console.log("User ID:", user?.id);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+  try {
+    // Send a request to the backend to play the game
+    const response = await fetch(
+      "https://newneobe.onrender.com/api/playRockPaperScissors",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userChoice,
+        }),
+        credentials: "include",
       }
+    );
 
-      const result = await response.json();
-      setGameResult(result);
-    } catch (error) {
-      console.error("Error playing Rock-Paper-Scissors:", error.message);
+    // Check if the request was successful
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  };
+
+    // Parse and set the game result
+    const result = await response.json();
+    setGameResult(result);
+  } catch (error) {
+    // Handle and log any errors that occur during the process
+    console.error("Error playing Rock-Paper-Scissors:", error.message);
+  }
+};
+
 
   return (
     <div className="minigame-container">
@@ -38,7 +49,7 @@ const MiniGame = ({ user }) => {
       <div className="choices-container">
         <label>
           Your Choice:
-            <br />
+          <br />
           <select
             value={userChoice}
             onChange={(e) => setUserChoice(e.target.value)}

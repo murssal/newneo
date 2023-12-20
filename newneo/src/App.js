@@ -14,34 +14,41 @@ import Shelter from "./Shelter";
 import PetPage from "./PetPage";
 import Account from "./Account";
 
+// main App component
 const App = () => {
+  // state to manage user information
   const [user, setUser] = useState(null);
+
+  // function to log registration form submission
   const handleRegisterSubmit = (formData) => {
     console.log("Form Data:", formData);
-    // Add logic to send registration data to the server
   };
 
+  // function to handle user login submission
   const handleLoginSubmit = (user) => {
     console.log("User logged in:", user);
-    // Add logic to handle user login in your app (e.g., update context)
+    // Add logic to handle user login
     setUser(user);
   };
 
+  // function to log pet form submission
   const handlePetSubmit = (petName) => {
     console.log("Pet entered:", petName);
-    // Add logic to handle user login in your app (e.g., update context)
   };
 
   return (
     <UserProvider>
       <Router>
         <div>
+          {/* Header component for navigation across all pages*/}
           <Header />
+
+          {/* Routes for different pages in the app */}
           <Routes>
-            {/* Default path when website is loaded (Home)*/}
+            {/* Default path when the website is loaded (Home)*/}
             <Route path="/" element={<Home />} />
 
-            {/* other routes */}
+            {/* Other routes */}
             <Route
               path="/register"
               element={<RegisterForm onSubmit={handleRegisterSubmit} />}
@@ -69,4 +76,5 @@ const App = () => {
     </UserProvider>
   );
 };
+
 export default App;

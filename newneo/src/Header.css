@@ -1,3 +1,4 @@
+/*header Styling*/
 header {
     display: flex;
     justify-content: space-between;
@@ -13,10 +14,12 @@ header {
     overflow: auto;
 }
 
+/*Logo container flex*/
 .logo-container {
     flex: 1;
 }
 
+/*Logo adjustments*/
 .logo {
     max-width: auto;
     height: 100px;
@@ -45,6 +48,7 @@ nav ul li::before {
     z-index: -1;
 }
 
+/*Styling items list*/
 nav ul li a {
     display: inline-block;
     padding: 10px 15px;
