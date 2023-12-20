@@ -82,6 +82,7 @@ app.use(
 
 // debugging, make sure user session is working
 app.use((req, res, next) => {
+  console.log(store);
   console.log("Session data:", req.session);
   next();
 });
@@ -119,6 +120,7 @@ app.post("/api/users", async (req, res) => {
 // User login route
 app.post("/api/login", async (req, res) => {
   try {
+    console.log(req.sessionID);
     const { username, password } = req.body;
 
     if (!username || !password) {
