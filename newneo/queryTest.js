@@ -81,7 +81,7 @@ app.use(
       sameSite: "Lax",
       maxAge: 86400000, // session duration in milliseconds (1 day)
       httpOnly: true,
-      name: req.session.sessionID,
+      name: "connect.sid",
     },
   })
 );
@@ -563,7 +563,7 @@ app.post("/api/logout", (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     } else {
       // Clear the session cookie on the client side
-      res.clearCookie(req.session.sessionID, { path: "/" });
+      res.clearCookie("connect.sid", { path: "/" });
       res.status(200).json({ message: "Logout successful!" });
     }
   });
