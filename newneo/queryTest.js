@@ -1,4 +1,3 @@
-//Backend Node
 const express = require("express");
 const path = require("path");
 const mysql = require("mysql2/promise");
@@ -7,7 +6,7 @@ const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
-const MySQLStore = require("express-mysql-session")(session);
+const jwt = require("jsonwebtoken"); // Include the JWT library
 
 dotenv.config();
 
@@ -19,7 +18,7 @@ const corsOptions = {
   credentials: true,
 };
 
-//db connection
+// db connection
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -32,32 +31,32 @@ const pool = mysql.createPool({
 
 // middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
-  const user = req.session.user;
+  const userToken = req.cookies.userToken;
 
-  if (!user || !user.id) {
+  if (!userToken) {
     return res.status(401).json({ error: "User not authenticated." });
   }
 
-  next();
+  try {
+    // Verify the token
+    const decoded = jwt.verify(userToken, process.env.JWT_SECRET);
+
+    // Store user information in the request for further use
+    req.user = decoded.user;
+
+    next();
+  } catch (error) {
+    console.error("Error during authentication:", error.message);
+    res.status(401).json({ error: "Invalid token." });
+  }
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "newneo")));
 
 // use cookie-parser middleware
-//app.use(cookieParser());
-
-const sessionStore = new MySQLStore(
-  {
-    checkExpirationInterval: 900000, // Check for expired sessions every 15 minutes
-    expiration: 86400000, // Sessions expire after 24 hours
-    connectionLimit: 10, // Allow up to 10 concurrent database connections
-    endConnectionOnClose: false, // Keep the MySQL connection open when the store is closed
-  },
-  pool
-);
+app.use(cookieParser());
 
 // generate a random secret key
 const generateSecretKey = () => {
@@ -70,7 +69,6 @@ app.use(
     secret: secretKey,
     resave: false,
     saveUninitialized: true,
-    store: sessionStore,
     cookie: {
       secure: true, // Use 'true' in production with HTTPS
       sameSite: "None",
@@ -85,7 +83,7 @@ app.use((req, res, next) => {
   next();
 });
 
-//Register
+// Register
 app.post("/api/users", async (req, res) => {
   try {
     const { username, password, email } = req.body;
@@ -133,16 +131,37 @@ app.post("/api/login", async (req, res) => {
     const [users] = await connection.execute(selectQuery, [username, password]);
 
     if (users.length === 1) {
-      // Store user information in the session
-      req.session.user = {
-        id: users[0].user_id,
-        username: users[0].username,
-        email: users[0].email,
-      };
+      // Generate a JWT token
+      const userToken = jwt.sign(
+        {
+          user: {
+            id: users[0].user_id,
+            username: users[0].username,
+            email: users[0].email,
+          },
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" } // Token expires in 1 day
+      );
+
+      // Set the token in a secure, HTTP-only cookie
+      res.cookie("userToken", userToken, {
+        httpOnly: true,
+        secure: true, // Use 'true' in production with HTTPS
+        sameSite: "None",
+        maxAge: 86400000, // cookie duration in milliseconds (1 day)
+      });
 
       res
         .status(200)
-        .json({ message: "Login successful!", user: req.session.user });
+        .json({
+          message: "Login successful!",
+          user: {
+            id: users[0].user_id,
+            username: users[0].username,
+            email: users[0].email,
+          },
+        });
     } else {
       res.status(401).json({ error: "Invalid credentials." });
     }
@@ -165,7 +184,7 @@ app.post("/api/user-pets", authenticateUser, async (req, res) => {
         .json({ error: "Pet name and pet type are required." });
     }
 
-    const user_id = req.session.user.id;
+    const user_id = req.user.id;
 
     const connection = await pool.getConnection();
 
@@ -185,6 +204,10 @@ app.post("/api/user-pets", authenticateUser, async (req, res) => {
     console.error("Error adding pet:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 // route to fetch items for page display
