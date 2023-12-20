@@ -101,7 +101,7 @@ app.use((req, res, next) => {
 });
 
 //Register
-app.post("/api/users", async (req, res) => {
+app.post("https://newneobe.onrender.com/api/users", async (req, res) => {
   try {
     const { username, password, email } = req.body;
 
@@ -131,7 +131,7 @@ app.post("/api/users", async (req, res) => {
 });
 
 // User login route
-app.post("/api/login", async (req, res) => {
+app.post("https://newneobe.onrender.com/api/login", async (req, res) => {
   try {
     console.log(req.sessionID);
     const { username, password } = req.body;
@@ -178,141 +178,102 @@ app.post("/api/login", async (req, res) => {
 });
 
 // New user-pets insert route
-app.post("/api/user-pets", authenticateUser, async (req, res) => {
-  try {
-    const { pet_name, pet_type, image_data } = req.body;
+app.post(
+  "https://newneobe.onrender.com/api/user-pets",
+  authenticateUser,
+  async (req, res) => {
+    try {
+      const { pet_name, pet_type, image_data } = req.body;
 
-    if (!pet_name || !pet_type) {
-      return res
-        .status(400)
-        .json({ error: "Pet name and pet type are required." });
+      if (!pet_name || !pet_type) {
+        return res
+          .status(400)
+          .json({ error: "Pet name and pet type are required." });
+      }
+
+      const user_id = req.session.user.id;
+
+      const connection = await pool.getConnection();
+
+      const insertQuery =
+        "INSERT INTO user_pets (user_id, pet_name, pet_type, image_data) VALUES (?, ?, ?, ?)";
+      const [result] = await connection.execute(insertQuery, [
+        user_id,
+        pet_name,
+        pet_type,
+        image_data,
+      ]);
+
+      connection.release();
+
+      res.status(200).json({ message: "Pet added successfully!" });
+    } catch (error) {
+      console.error("Error adding pet:", error.message);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-
-    const user_id = req.session.user.id;
-
-    const connection = await pool.getConnection();
-
-    const insertQuery =
-      "INSERT INTO user_pets (user_id, pet_name, pet_type, image_data) VALUES (?, ?, ?, ?)";
-    const [result] = await connection.execute(insertQuery, [
-      user_id,
-      pet_name,
-      pet_type,
-      image_data,
-    ]);
-
-    connection.release();
-
-    res.status(200).json({ message: "Pet added successfully!" });
-  } catch (error) {
-    console.error("Error adding pet:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
   }
-});
+);
 
 // route to fetch items for page display
-app.get("/api/items", authenticateUser, async (req, res) => {
-  console.log("/api/items - Session:", req.session);
-  try {
-    const user_id = req.session.user.id;
+app.get(
+  "https://newneobe.onrender.com/api/items",
+  authenticateUser,
+  async (req, res) => {
+    console.log("/api/items - Session:", req.session);
+    try {
+      const user_id = req.session.user.id;
 
-    const connection = await pool.getConnection();
+      const connection = await pool.getConnection();
 
-    const selectQuery =
-      "SELECT item_id, item_name, item_photo, price FROM items";
-    const [items] = await connection.execute(selectQuery);
+      const selectQuery =
+        "SELECT item_id, item_name, item_photo, price FROM items";
+      const [items] = await connection.execute(selectQuery);
 
-    connection.release();
+      connection.release();
 
-    res.status(200).json(items);
-  } catch (error) {
-    console.error("Error fetching items:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+      res.status(200).json(items);
+    } catch (error) {
+      console.error("Error fetching items:", error.message);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
-});
+);
 
 // Rock, Paper, Scissors game route
-app.post("/api/playRockPaperScissors", authenticateUser, async (req, res) => {
-  console.log("/playRockPaperScissors - Session:", req.session);
-  const connection = await pool.getConnection();
-  const user_id = req.session.user.id;
-  const userChoice = req.body.userChoice;
-
-  if (!userChoice || !["rock", "paper", "scissors"].includes(userChoice)) {
-    return res.status(400).json({ error: "Invalid user choice." });
-  }
-
-  // Generate a random choice for the computer
-  const computerChoices = ["rock", "paper", "scissors"];
-  const computerChoice =
-    computerChoices[Math.floor(Math.random() * computerChoices.length)];
-
-  // Determine the winner
-  let result;
-  if (userChoice === computerChoice) {
-    result = "It's a tie! Try again!";
-  } else if (
-    (userChoice === "rock" && computerChoice === "scissors") ||
-    (userChoice === "paper" && computerChoice === "rock") ||
-    (userChoice === "scissors" && computerChoice === "paper")
-  ) {
-    // Check the user's neopoints
-    const [userResult] = await connection.execute(
-      "SELECT neopoints FROM users WHERE user_id = ?",
-      [user_id]
-    );
-    console.log(
-      "print user neopoints in queryTest for debugging mini game",
-      userResult
-    );
-
-    if (!userResult || userResult.length === 0) {
-      // User not found
-      return res.status(404).json({ error: "User not found." });
-    }
-
-    const userNeopoints = userResult[0].neopoints;
-    const updatedNeopoints = userNeopoints + 100;
-    await pool.execute("UPDATE users SET neopoints = ? WHERE user_id = ?", [
-      updatedNeopoints,
-      user_id,
-    ]);
-    result = "You have been awarded 100 neopoints!";
-  } else {
-    result = "Sorry, you lose. Try again!";
-  }
-
-  res.json({ result, computerChoice, win: result.includes("win") });
-});
-
-app.post("/api/buy-item", authenticateUser, async (req, res) => {
-  console.log("/api/buy-item - Session:", req.session);
-
-  try {
-    const { itemId } = req.body;
-    console.log("Item ID from request:", itemId);
-    const user_id = req.session.user.id;
-    console.log("print user id in queryTest for debugging", user_id);
-
-    if (!user_id || !itemId) {
-      return res
-        .status(400)
-        .json({ error: "User ID and item ID are required." });
-    }
-
+app.post(
+  "https://newneobe.onrender.com/api/playRockPaperScissors",
+  authenticateUser,
+  async (req, res) => {
+    console.log("/playRockPaperScissors - Session:", req.session);
     const connection = await pool.getConnection();
+    const user_id = req.session.user.id;
+    const userChoice = req.body.userChoice;
 
-    try {
-      // Start a transaction
-      await connection.beginTransaction();
-      console.log("transaction started...waiting on query...");
+    if (!userChoice || !["rock", "paper", "scissors"].includes(userChoice)) {
+      return res.status(400).json({ error: "Invalid user choice." });
+    }
+
+    // Generate a random choice for the computer
+    const computerChoices = ["rock", "paper", "scissors"];
+    const computerChoice =
+      computerChoices[Math.floor(Math.random() * computerChoices.length)];
+
+    // Determine the winner
+    let result;
+    if (userChoice === computerChoice) {
+      result = "It's a tie! Try again!";
+    } else if (
+      (userChoice === "rock" && computerChoice === "scissors") ||
+      (userChoice === "paper" && computerChoice === "rock") ||
+      (userChoice === "scissors" && computerChoice === "paper")
+    ) {
       // Check the user's neopoints
       const [userResult] = await connection.execute(
         "SELECT neopoints FROM users WHERE user_id = ?",
         [user_id]
       );
       console.log(
-        "print user neopoints in queryTest for debugging",
+        "print user neopoints in queryTest for debugging mini game",
         userResult
       );
 
@@ -322,241 +283,320 @@ app.post("/api/buy-item", authenticateUser, async (req, res) => {
       }
 
       const userNeopoints = userResult[0].neopoints;
-      // Example getItemPrice implementation
-      async function getItemPrice(connection, itemId) {
-        try {
-          const [result] = await connection.execute(
-            "SELECT price FROM items WHERE item_id = ?",
-            [itemId]
-          );
+      const updatedNeopoints = userNeopoints + 100;
+      await pool.execute("UPDATE users SET neopoints = ? WHERE user_id = ?", [
+        updatedNeopoints,
+        user_id,
+      ]);
+      result = "You have been awarded 100 neopoints!";
+    } else {
+      result = "Sorry, you lose. Try again!";
+    }
 
-          if (!result || result.length === 0) {
-            // Item not found
-            console.error("Item not found for itemId:", itemId);
-            return null;
-          }
+    res.json({ result, computerChoice, win: result.includes("win") });
+  }
+);
 
-          const itemPrice = result[0].price;
-          console.log(
-            "Item price retrieved for itemId:",
-            itemId,
-            "-",
-            itemPrice
-          );
-          return itemPrice;
-        } catch (error) {
-          console.error("Error getting item price:", error.message);
-          throw error; // You may choose to handle or propagate the error based on your needs
+app.post(
+  "https://newneobe.onrender.com/api/buy-item",
+  authenticateUser,
+  async (req, res) => {
+    console.log("/api/buy-item - Session:", req.session);
+
+    try {
+      const { itemId } = req.body;
+      console.log("Item ID from request:", itemId);
+      const user_id = req.session.user.id;
+      console.log("print user id in queryTest for debugging", user_id);
+
+      if (!user_id || !itemId) {
+        return res
+          .status(400)
+          .json({ error: "User ID and item ID are required." });
+      }
+
+      const connection = await pool.getConnection();
+
+      try {
+        // Start a transaction
+        await connection.beginTransaction();
+        console.log("transaction started...waiting on query...");
+        // Check the user's neopoints
+        const [userResult] = await connection.execute(
+          "SELECT neopoints FROM users WHERE user_id = ?",
+          [user_id]
+        );
+        console.log(
+          "print user neopoints in queryTest for debugging",
+          userResult
+        );
+
+        if (!userResult || userResult.length === 0) {
+          // User not found
+          return res.status(404).json({ error: "User not found." });
         }
-      }
 
-      // Get the item price
-      const itemPrice = await getItemPrice(connection, itemId);
+        const userNeopoints = userResult[0].neopoints;
+        // Example getItemPrice implementation
+        async function getItemPrice(connection, itemId) {
+          try {
+            const [result] = await connection.execute(
+              "SELECT price FROM items WHERE item_id = ?",
+              [itemId]
+            );
 
-      if (itemPrice === null) {
-        // Item not found
-        return res.status(404).json({ error: "Item not found." });
-      }
+            if (!result || result.length === 0) {
+              // Item not found
+              console.error("Item not found for itemId:", itemId);
+              return null;
+            }
 
-      // Check if the user has enough neopoints to buy the item
-      if (userNeopoints >= itemPrice) {
-        // Deduct the neopoints from the user
-        const remainingNeopoints = userNeopoints - itemPrice;
-        await connection.execute(
-          "UPDATE users SET neopoints = ? WHERE user_id = ?",
-          [remainingNeopoints, user_id]
-        );
+            const itemPrice = result[0].price;
+            console.log(
+              "Item price retrieved for itemId:",
+              itemId,
+              "-",
+              itemPrice
+            );
+            return itemPrice;
+          } catch (error) {
+            console.error("Error getting item price:", error.message);
+            throw error; // You may choose to handle or propagate the error based on your needs
+          }
+        }
 
-        // Add the item to the user's pocket
-        await connection.execute(
-          "INSERT INTO user_pocket (user_id, item_id, quantity) VALUES (?, ?, 1)",
-          [user_id, itemId]
-        );
+        // Get the item price
+        const itemPrice = await getItemPrice(connection, itemId);
 
-        // Commit the transaction
-        await connection.commit();
+        if (itemPrice === null) {
+          // Item not found
+          return res.status(404).json({ error: "Item not found." });
+        }
 
-        res.status(200).json({ message: "Item purchased successfully!" });
-      } else {
-        res
-          .status(403)
-          .json({ error: "Insufficient neopoints to buy the item." });
+        // Check if the user has enough neopoints to buy the item
+        if (userNeopoints >= itemPrice) {
+          // Deduct the neopoints from the user
+          const remainingNeopoints = userNeopoints - itemPrice;
+          await connection.execute(
+            "UPDATE users SET neopoints = ? WHERE user_id = ?",
+            [remainingNeopoints, user_id]
+          );
+
+          // Add the item to the user's pocket
+          await connection.execute(
+            "INSERT INTO user_pocket (user_id, item_id, quantity) VALUES (?, ?, 1)",
+            [user_id, itemId]
+          );
+
+          // Commit the transaction
+          await connection.commit();
+
+          res.status(200).json({ message: "Item purchased successfully!" });
+        } else {
+          res
+            .status(403)
+            .json({ error: "Insufficient neopoints to buy the item." });
+        }
+      } catch (error) {
+        // If an error occurs, rollback the transaction
+        await connection.rollback();
+        console.error("Error buying item:", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+      } finally {
+        // Always release the connection back to the pool, whether there was an error or not
+        connection.release();
       }
     } catch (error) {
-      // If an error occurs, rollback the transaction
-      await connection.rollback();
       console.error("Error buying item:", error.message);
       res.status(500).json({ error: "Internal Server Error" });
-    } finally {
-      // Always release the connection back to the pool, whether there was an error or not
-      connection.release();
     }
-  } catch (error) {
-    console.error("Error buying item:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
   }
-});
+);
 
-app.get("/api/user-pets", authenticateUser, async (req, res) => {
-  try {
-    const user_id = req.session.user.id;
+app.get(
+  "https://newneobe.onrender.com/api/user-pets",
+  authenticateUser,
+  async (req, res) => {
+    try {
+      const user_id = req.session.user.id;
 
-    const connection = await pool.getConnection();
+      const connection = await pool.getConnection();
 
-    const selectQuery =
-      "SELECT pet_id, pet_name, pet_type, health, happiness, image_data FROM user_pets WHERE user_id = ?";
-    const [pets] = await connection.execute(selectQuery, [user_id]);
+      const selectQuery =
+        "SELECT pet_id, pet_name, pet_type, health, happiness, image_data FROM user_pets WHERE user_id = ?";
+      const [pets] = await connection.execute(selectQuery, [user_id]);
 
-    connection.release();
+      connection.release();
 
-    console.log("User Pets:", pets); // Log the pets to the console
+      console.log("User Pets:", pets); // Log the pets to the console
 
-    res.status(200).json({ pets });
-  } catch (error) {
-    console.error("Error fetching user pets:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+      res.status(200).json({ pets });
+    } catch (error) {
+      console.error("Error fetching user pets:", error.message);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
-});
+);
 
 // New route for updating pet hunger
-app.post("/api/update-pet-hunger", authenticateUser, async (req, res) => {
-  try {
-    const user_id = req.session.user.id;
-    const petId = req.body.petId; // Extract petId from the request body
+app.post(
+  "https://newneobe.onrender.com/api/update-pet-hunger",
+  authenticateUser,
+  async (req, res) => {
+    try {
+      const user_id = req.session.user.id;
+      const petId = req.body.petId; // Extract petId from the request body
 
-    const connection = await pool.getConnection();
+      const connection = await pool.getConnection();
 
-    // Fetch current health for the specific pet from the database
-    const [pet] = await connection.execute(
-      "SELECT health FROM user_pets WHERE user_id = ? AND pet_id = ?",
-      [user_id, petId]
-    );
-
-    if (!pet || pet.length === 0) {
-      return res.status(404).json({ error: "Pet not found." });
-    }
-
-    const currentHealth = pet[0].health;
-    console.log(currentHealth);
-
-    // Calculate the new health (assuming it's being increased by 10)
-    const newHealth = Math.min(currentHealth + 10, 100);
-    console.log(newHealth);
-
-    // Update health only if the new health is 10 higher than the current value
-    if (newHealth > currentHealth) {
-      await connection.execute(
-        "UPDATE user_pets SET health = ? WHERE user_id = ? AND pet_id = ?",
-        [newHealth, user_id, petId]
+      // Fetch current health for the specific pet from the database
+      const [pet] = await connection.execute(
+        "SELECT health FROM user_pets WHERE user_id = ? AND pet_id = ?",
+        [user_id, petId]
       );
 
-      res.status(200).json({ message: "Pet hunger updated successfully." });
-    } else {
-      res.status(200).json({ message: "Pet hunger is already at maximum." });
-    }
+      if (!pet || pet.length === 0) {
+        return res.status(404).json({ error: "Pet not found." });
+      }
 
-    connection.release();
-  } catch (error) {
-    console.error("Error updating pet hunger:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+      const currentHealth = pet[0].health;
+      console.log(currentHealth);
+
+      // Calculate the new health (assuming it's being increased by 10)
+      const newHealth = Math.min(currentHealth + 10, 100);
+      console.log(newHealth);
+
+      // Update health only if the new health is 10 higher than the current value
+      if (newHealth > currentHealth) {
+        await connection.execute(
+          "UPDATE user_pets SET health = ? WHERE user_id = ? AND pet_id = ?",
+          [newHealth, user_id, petId]
+        );
+
+        res.status(200).json({ message: "Pet hunger updated successfully." });
+      } else {
+        res.status(200).json({ message: "Pet hunger is already at maximum." });
+      }
+
+      connection.release();
+    } catch (error) {
+      console.error("Error updating pet hunger:", error.message);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
-});
+);
 
 // get user-pets route
-app.get("/api/user-pets", authenticateUser, async (req, res) => {
-  try {
-    const user_id = req.session.user.id;
+app.get(
+  "https://newneobe.onrender.com/api/user-pets",
+  authenticateUser,
+  async (req, res) => {
+    try {
+      const user_id = req.session.user.id;
 
-    const connection = await pool.getConnection();
+      const connection = await pool.getConnection();
 
-    const selectQuery =
-      "SELECT pet_name, pet_type, image_data FROM user_pets WHERE user_id = ?";
-    const [pets] = await connection.execute(selectQuery, [user_id]);
+      const selectQuery =
+        "SELECT pet_name, pet_type, image_data FROM user_pets WHERE user_id = ?";
+      const [pets] = await connection.execute(selectQuery, [user_id]);
 
-    connection.release();
+      connection.release();
 
-    res.status(200).json({ pets });
-  } catch (error) {
-    console.error("Error finding pets:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+      res.status(200).json({ pets });
+    } catch (error) {
+      console.error("Error finding pets:", error.message);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
-});
+);
 
 //account page user info - displays username and neopoints
-app.get("/api/account-user-info", authenticateUser, async (req, res) => {
-  try {
-    console.log("/api/account-user-info - Session:", req.session); //printing in console for debugging
-    const userId = req.session.user.id;
-    const connection = await pool.getConnection();
-    console.log(userId); //printing in console for debugging
-    // Fetch user information (username and neopoints) from the users table
-    const [userInfo] = await connection.execute(
-      "SELECT username, neopoints FROM users WHERE user_id = ?", //query database
-      [userId]
-    );
-    console.log(userInfo); //printing in console for debugging
-    if (!userInfo || userInfo.length === 0) {
-      return res.status(404).json({ error: "User not found." });
-    }
+app.get(
+  "https://newneobe.onrender.com/api/account-user-info",
+  authenticateUser,
+  async (req, res) => {
+    try {
+      console.log("/api/account-user-info - Session:", req.session); //printing in console for debugging
+      const userId = req.session.user.id;
+      const connection = await pool.getConnection();
+      console.log(userId); //printing in console for debugging
+      // Fetch user information (username and neopoints) from the users table
+      const [userInfo] = await connection.execute(
+        "SELECT username, neopoints FROM users WHERE user_id = ?", //query database
+        [userId]
+      );
+      console.log(userInfo); //printing in console for debugging
+      if (!userInfo || userInfo.length === 0) {
+        return res.status(404).json({ error: "User not found." });
+      }
 
-    // Send the user information as JSON response
-    res.json({
-      username: userInfo[0].username,
-      neopoints: userInfo[0].neopoints,
-    });
-  } catch (error) {
-    console.error("Error fetching user info:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+      // Send the user information as JSON response
+      res.json({
+        username: userInfo[0].username,
+        neopoints: userInfo[0].neopoints,
+      });
+    } catch (error) {
+      console.error("Error fetching user info:", error.message);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
-});
+);
 
 //acount page - displays users items
-app.get("/api/account-user-items", authenticateUser, async (req, res) => {
-  try {
-    const userId = req.session.user.id;
-    const connection = await pool.getConnection();
+app.get(
+  "https://newneobe.onrender.com/api/account-user-items",
+  authenticateUser,
+  async (req, res) => {
+    try {
+      const userId = req.session.user.id;
+      const connection = await pool.getConnection();
 
-    // Fetch user items by joining user_pocket and items tables
-    const [userItems] = await connection.execute(
-      "SELECT items.item_name FROM user_pocket " +
-        "JOIN items ON user_pocket.item_id = items.item_id " +
-        "WHERE user_pocket.user_id = ?",
-      [userId]
-    );
-    console.log(userItems);
-    // Extract item names from the result
-    const itemNames = userItems.map((item) => item.item_name);
+      // Fetch user items by joining user_pocket and items tables
+      const [userItems] = await connection.execute(
+        "SELECT items.item_name FROM user_pocket " +
+          "JOIN items ON user_pocket.item_id = items.item_id " +
+          "WHERE user_pocket.user_id = ?",
+        [userId]
+      );
+      console.log(userItems);
+      // Extract item names from the result
+      const itemNames = userItems.map((item) => item.item_name);
 
-    // Send the user items as JSON response
-    res.json({ items: itemNames });
-  } catch (error) {
-    console.error("Error fetching user items:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+      // Send the user items as JSON response
+      res.json({ items: itemNames });
+    } catch (error) {
+      console.error("Error fetching user items:", error.message);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
-});
+);
 
 //account page - displays users pets
-app.get("/api/account-user-pets", authenticateUser, async (req, res) => {
-  try {
-    const userId = req.session.user.id;
-    const connection = await pool.getConnection();
+app.get(
+  "https://newneobe.onrender.com/api/account-user-pets",
+  authenticateUser,
+  async (req, res) => {
+    try {
+      const userId = req.session.user.id;
+      const connection = await pool.getConnection();
 
-    // Fetch user pets from the user_pets table
-    const [userPets] = await connection.execute(
-      "SELECT pet_name, pet_type FROM user_pets WHERE user_id = ?",
-      [userId]
-    );
+      // Fetch user pets from the user_pets table
+      const [userPets] = await connection.execute(
+        "SELECT pet_name, pet_type FROM user_pets WHERE user_id = ?",
+        [userId]
+      );
 
-    // Send the user pets as JSON response
-    res.json({ pets: userPets });
-  } catch (error) {
-    console.error("Error fetching user pets:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+      // Send the user pets as JSON response
+      res.json({ pets: userPets });
+    } catch (error) {
+      console.error("Error fetching user pets:", error.message);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
-});
+);
 
 // User logout route
-app.post("/api/logout", (req, res) => {
+app.post("https://newneobe.onrender.com/api/logout", (req, res) => {
   // Destroy the session
   req.session.destroy((err) => {
     if (err) {
