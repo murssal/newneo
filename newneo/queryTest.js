@@ -57,7 +57,7 @@ const sessionStore = new MySQLStore(
     connectionLimit: 10, // Allow up to 10 concurrent database connections
     endConnectionOnClose: false, // Keep the MySQL connection open when the store is closed
   },
-  mysql.createPool(dbConfig)
+  pool
 );
 
 // generate a random secret key
