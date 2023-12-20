@@ -61,7 +61,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: false, // Use 'true' in production with HTTPS
+      secure: true, // Use 'true' in production with HTTPS
       maxAge: 86400000, // session duration in milliseconds (1 day)
     },
   })
