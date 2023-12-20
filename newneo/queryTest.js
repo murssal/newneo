@@ -82,7 +82,7 @@ app.use(
 
 // debugging, make sure user session is working
 app.use((req, res, next) => {
-  console.log(store);
+  console.log(sessionStore);
   console.log("Session data:", req.session);
   next();
 });
