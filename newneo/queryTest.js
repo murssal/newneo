@@ -56,7 +56,7 @@ app.set("trust proxy", 1);
 const sessionStore = new MySQLStore(
   {
     checkExpirationInterval: 900000, // Check for expired sessions every 15 minutes
-    expiration: 60000, // Sessions expire after 1min
+    expiration: 180000, // Sessions expire after 1min
     connectionLimit: 10, // Allow up to 10 concurrent database connections
     endConnectionOnClose: false, // Keep the MySQL connection open when the store is closed
     createDatabaseTable: true, // Automatically create the sessions table if not exists
@@ -79,7 +79,7 @@ app.use(
     cookie: {
       secure: true, // Use 'true' in production with HTTPS
       sameSite: "None",
-      maxAge: 60000, // session duration in milliseconds (1 min)
+      maxAge: 180000, // session duration in milliseconds (1 min)
       httpOnly: true,
       domain: ".newneobe.onrender.com",
       name: "connect.sid",
