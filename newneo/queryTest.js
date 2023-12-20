@@ -47,7 +47,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "newneo")));
 
 // use cookie-parser middleware
-app.use(cookieParser());
+//app.use(cookieParser());
 
 const sessionStore = new MySQLStore(
   {
